@@ -1,1 +1,125 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Промокоды Фонбет — сравнение и отзывы</title>
+  <link rel="stylesheet" href="/assets/styles.css">
+</head>
+<body>
+<div class="wrap">
+  <h1>Промокоды Фонбет — сравнение</h1>
+  <div class="hint">Обновлено: {{ data.updated_at }}. Активные сверху, ниже — истёкшие.</div>
+
+  {# ==== ACTIVE ==== #}
+  {% for o in data.active_offers %}
+  <article class="card" aria-label="{{ o.source }}">
+    <div class="card__top">
+      <div class="src">{{ o.source }}</div>
+      <span class="badge">{{ o.tag }}</span>
+      <div class="meta">
+        <span class="updated">обновлено: {{ o.updated }}</span>
+        <span class="status {{ 'active' if o.status=='active' else 'event' }}">{{ 'активно' if o.status=='active' else 'событийные' }}</span>
+      </div>
+    </div>
+
+    <div class="codes">
+      {% for c in o.codes %}
+      <div class="codepill" data-code="{{ c }}"><span>{{ c }}</span><button class="copy-btn" data-copy>Копировать</button></div>
+      {% endfor %}
+    </div>
+    {% if o.badges_line and o.badges_line|length %}
+      <div class="nomline">
+        {% for b in o.badges_line %}
+          <span class="nom nom--{{ b }}">{{ 'событийная акция' if b=='event' else ('самый маленький' if b=='min' else ('как у большинства' if b=='common' else b )) }}</span>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <div class="grid">
+      <div class="kv"><b>Сумма</b>
+        {% if o.amount.min %}{{ o.amount.min }}–{% endif %}{{ o.amount.max }} ₽
+        {% for b in o.amount.label_badges %}<span class="nom nom--{{ b }}">{{ 'самый большой' if b=='max' else ('как у большинства' if b=='common' else b) }}</span>{% endfor %}
+      </div>
+      <div class="kv"><b>Для кого</b> {{ o.audience }}</div>
+      <div class="kv"><b>Срок</b> {{ o.terms.days or '—' }} дней <span class="nom nom--std">как у всех</span></div>
+      <div class="kv"><b>Ставка</b> ординар ≤ {{ o.terms.coef_max or '—' }} <span class="nom nom--std">как у всех</span></div>
+    </div>
+
+    {% if o.terms.chips and o.terms.chips|length %}
+    <div class="chips">{% for ch in o.terms.chips %}<span class="chip">{{ ch }}</span>{% endfor %}</div>
+    {% endif %}
+
+    {# отзывы — компактная версия <=15% #}
+    <div class="reviews reviews--compact" aria-label="Отзывы">
+      <div class="rev-head">
+        <div class="stars">
+          {% set full = o.reviews.avg|round(0,'floor')|int %}
+          {% set half = 1 if (o.reviews.avg - full) >= 0.5 and full<5 else 0 %}
+          {% for i in range(0, full) %}<span class="star star--on">★</span>{% endfor %}
+          {% if half %}<span class="star star--on" style="clip-path: inset(0 40% 0 0)">★</span>{% endif %}
+          {% for i in range(0, 5-full-half) %}<span class="star star--off">★</span>{% endfor %}
+        </div>
+        <div class="score">{{ '%.1f' % o.reviews.avg }} / 5</div>
+      </div>
+      <div class="subhint">На основе {{ o.reviews.total }} оценок</div>
+      <div class="dist">
+        {% set total = o.reviews.total %}
+        {% for k in ['5','4','3','2','1'] %}
+        {% set cnt = o.reviews.dist[k] %}
+        <div class="dist-row">
+          <div class="label">{{ k }} звёзд</div>
+          <div class="bar"><i style="width: {{ (cnt/total*100)|round(1) }}%"></i></div>
+          <div class="count">{{ cnt }}</div>
+        </div>
+        {% endfor %}
+      </div>
+      <div class="pop"><div class="meter"><i style="width: {{ o.reviews.pop }}%"></i></div><div class="val">популярность {{ o.reviews.pop }}/100</div></div>
+      <div style="margin-top:8px"><button class="btn outline">Оставить отзыв</button></div>
+    </div>
+
+    <div class="links">
+      {% if o.links.details %}<a class="link" href="{{ o.links.details }}">Страница условий</a>{% endif %}
+      {% if o.links.archive %}<a class="link" href="{{ o.links.archive }}">Архив прошедших кодов</a>{% endif %}
+    </div>
+  </article>
+  {% endfor %}
+
+  <div class="section-title">Истёкшие промокоды</div>
+  <div class="section-hint">Не активны. Оставлены для истории.</div>
+
+  {# ==== EXPIRED ==== #}
+  {% for o in data.expired_offers %}
+  <article class="card expired">
+    <div class="card__top">
+      <div class="src">{{ o.source }}</div>
+      <span class="badge">{{ o.tag }}</span>
+      <div class="meta"><span class="updated">{{ o.updated }}</span><span class="status exp">неактивно</span></div>
+    </div>
+    <div class="codes">{% for c in o.codes %}<div class="codepill"><span>{{ c }}</span></div>{% endfor %}</div>
+    <div class="grid">
+      <div class="kv"><b>Сумма</b> {% if o.amount.min %}{{ o.amount.min }}–{% endif %}{{ o.amount.max }} ₽</div>
+      <div class="kv"><b>Срок</b> {{ o.terms.days or '—' }} дней</div>
+      <div class="kv"><b>Ставка</b> ординар ≤ {{ o.terms.coef_max or '—' }}</div>
+      <div class="kv"><b>Тип</b> {{ o.tag }}</div>
+    </div>
+  </article>
+  {% endfor %}
+</div>
+
+<script>
+  // копирование кода
+  document.addEventListener('click', e=>{
+    const btn = e.target.closest('[data-copy]');
+    if(!btn) return;
+    const pill = btn.closest('.codepill');
+    const code = pill?.dataset.code?.trim();
+    if(!code) return;
+    navigator.clipboard.writeText(code).then(()=>{
+      const old = btn.textContent; btn.textContent = 'Скопировано!'; setTimeout(()=>btn.textContent=old,1200);
+    });
+  });
+</script>
+</body>
+</html>
 
