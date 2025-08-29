@@ -1,74 +1,93 @@
-/* === Тема по умолчанию (тёмная) === */
+/* ==== ТЕМА: по умолчанию тёмная ==== */
 :root{
   --bg:#0f1115; --card:#161922; --text:#e7e9ee; --muted:#9aa3b2;
   --primary:#6aa3ff; --chip:#232836; --stroke:#22283a;
-  --ok:#2ecc71; --warn:#f39c12; --bad:#e74c3c;
+  --ok:#2ecc71; --warn:#d99700; --bad:#e74c3c;
 }
 
-/* === Светлая тема (авто по системным настройкам) === */
+/* Если системная тема светлая и пользователь НЕ задал вручную data-theme */
 @media (prefers-color-scheme: light){
-  :root{
+  :root:not([data-theme]){
     --bg:#f6f7fa; --card:#ffffff; --text:#1a1c21; --muted:#6b7280;
     --primary:#3b82f6; --chip:#f1f3f7; --stroke:#d1d5db;
-    --ok:#16a34a; --warn:#d97706; --bad:#dc2626;
+    --ok:#16a34a; --warn:#b45309; --bad:#dc2626;
   }
 }
-
-/* базовые */
-*{box-sizing:border-box}
-body{
-  margin:0; background:var(--bg); color:var(--text);
-  font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial;
-  transition:background .3s,color .3s;
+/* Явный ручной выбор светлой темы */
+:root[data-theme="light"]{
+  --bg:#f6f7fa; --card:#ffffff; --text:#1a1c21; --muted:#6b7280;
+  --primary:#3b82f6; --chip:#f1f3f7; --stroke:#d1d5db;
+  --ok:#16a34a; --warn:#b45309; --bad:#dc2626;
 }
-.wrap{max-width:860px;margin:auto;padding:16px}
-h1{font-size:22px;margin:4px 0 8px}
-.hint{color:var(--muted);font-size:13px;margin-bottom:12px}
 
-/* карточка */
+/* ==== базовые ==== */
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);
+     font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial;
+     transition:background .25s,color .25s}
+.wrap{max-width:1100px;margin:auto;padding:16px}
+h1{font-size:28px;margin:0 0 10px}
+.hint{color:var(--muted);font-size:13px;margin:0 0 12px}
+
+/* ==== панель управления ==== */
+.toolbar{
+  display:flex; flex-wrap:wrap; gap:10px; align-items:center;
+  margin:6px 0 12px; padding:10px; background:var(--card);
+  border:1px solid var(--stroke); border-radius:12px;
+}
+.group{display:flex; gap:8px; align-items:center}
+label.small{font-size:13px;color:var(--muted)}
+select, .seg{
+  background:var(--chip); color:var(--text); border:1px solid var(--stroke);
+  border-radius:10px; padding:8px 10px; font:inherit
+}
+.seg{display:inline-flex; gap:2px}
+.seg button{
+  padding:8px 10px; border:none; background:transparent; color:var(--text);
+  border-radius:8px; cursor:pointer
+}
+.seg button.active{background:var(--primary); color:#fff}
+.theme-btn{
+  margin-left:auto; padding:8px 12px; border:1px solid var(--stroke);
+  background:var(--chip); color:var(--text); border-radius:10px; cursor:pointer
+}
+
+/* ==== карточки ==== */
 .card{
   background:var(--card); border:1px solid var(--stroke);
-  border-radius:14px; padding:12px; margin:10px 0; position:relative;
+  border-radius:14px; padding:12px; margin:12px 0; position:relative;
   box-shadow:0 1px 0 rgba(0,0,0,.05), 0 6px 16px rgba(0,0,0,.08);
 }
 .card.expired{opacity:.85}
 .card__top{display:flex; gap:10px; align-items:center}
 .src{font-weight:700}
-.badge{
-  display:inline-block; padding:4px 8px; border-radius:10px;
-  background:var(--chip); border:1px solid var(--stroke); font-size:12px; color:var(--muted);
-}
+.badge{display:inline-block;padding:4px 8px;border-radius:10px;
+  background:var(--chip); border:1px solid var(--stroke); font-size:12px;color:var(--muted)}
 .meta{display:flex; gap:8px; align-items:center; margin-left:auto; flex-wrap:wrap}
-.status{font-size:12px; padding:3px 8px; border-radius:999px}
-.status.active{background:rgba(46,204,113,.15); color:var(--ok)}
-.status.event{background:rgba(243,156,18,.12); color:var(--warn)}
-.status.exp{background:rgba(231,76,60,.16); color:var(--bad)}
+.status{font-size:12px;padding:3px 8px;border-radius:999px}
+.status.active{background:rgba(46,204,113,.15);color:var(--ok)}
+.status.event{background:rgba(243,156,18,.12);color:var(--warn)}
+.status.exp{background:rgba(231,76,60,.16);color:var(--bad)}
 .updated{font-size:12px;color:var(--muted)}
 
-/* коды */
 .codes{display:flex; gap:8px; flex-wrap:wrap; margin:10px 0 6px}
 .codepill{
-  display:flex; align-items:center; gap:6px;
-  border:1px dashed var(--primary); background:color-mix(in srgb,var(--primary) 12%, transparent);
-  padding:6px 8px; border-radius:10px; font-weight:700; letter-spacing:.5px;
+  display:flex; align-items:center; gap:6px; font-weight:700; letter-spacing:.5px;
+  border:1px dashed var(--primary);
+  background:color-mix(in srgb,var(--primary) 12%, transparent);
+  padding:6px 8px; border-radius:10px;
 }
-.copy-btn{
-  border:1px solid var(--stroke); background:var(--chip); color:var(--text);
-  border-radius:8px; padding:6px 8px; font-size:13px; cursor:pointer;
-}
-.btn{
-  border:1px solid var(--stroke); background:var(--chip); color:var(--text);
-  border-radius:10px; padding:8px 10px; font-weight:700; cursor:pointer;
-}
+.copy-btn{border:1px solid var(--stroke); background:var(--chip); color:var(--text);
+  border-radius:8px; padding:6px 8px; font-size:13px; cursor:pointer}
+.btn{border:1px solid var(--stroke); background:var(--chip); color:var(--text);
+  border-radius:10px; padding:8px 10px; font-weight:700; cursor:pointer}
 .btn.primary{border-color:transparent; background:var(--primary); color:#fff}
 .btn.outline{background:transparent}
 
-/* параметры */
 .grid{display:grid; gap:8px; margin:10px 0; grid-template-columns:repeat(2,minmax(0,1fr))}
+@media (min-width:900px){ .grid{grid-template-columns:repeat(4,minmax(0,1fr))} }
 .kv{background:var(--chip); border:1px solid var(--stroke); border-radius:10px; padding:8px}
-.kv b{display:block; font-size:12px; color:var(--muted); margin-bottom:3px}
-.chips{display:flex; flex-wrap:wrap; gap:6px; margin-top:6px}
-.chip{font-size:12px; padding:4px 8px; border-radius:999px; background:var(--chip); border:1px solid var(--stroke)}
+.kv b{display:block;font-size:12px;color:var(--muted);margin-bottom:3px}
 
 /* номинации */
 .nom{display:inline-block;margin-left:6px;padding:2px 6px;font-size:11px;font-weight:700;border-radius:999px;border:1px solid transparent;white-space:nowrap}
@@ -82,44 +101,38 @@ h1{font-size:22px;margin:4px 0 8px}
 .nom--event{background:#f9c97a;color:#2a1d05}
 .nomline{margin-top:4px;font-size:11px;color:var(--muted)}
 
-/* collapsible */
-details{margin-top:8px}
-details summary{cursor:pointer; color:var(--muted)}
+.chips{display:flex; flex-wrap:wrap; gap:6px; margin-top:6px}
+.chip{font-size:12px; padding:4px 8px; border-radius:999px; background:var(--chip); border:1px solid var(--stroke)}
 
-/* ссылки */
-.links{display:flex; gap:8px; margin-top:10px; flex-wrap:wrap}
-.link{font-size:13px; color:var(--primary); text-decoration:none; border-bottom:1px dashed color-mix(in srgb,var(--primary) 50%, transparent)}
+/* --- плитка ОТЗЫВЫ (вместо "Ставка") --- */
+.kv.kv-reviews{cursor:pointer}
+.rv-mini{display:grid; grid-template-columns:auto 1fr auto; gap:8px; align-items:center}
+.rv-stars{display:inline-flex; gap:2px; font-size:16px; line-height:1}
+.rv-stars .on{color:#ffc400}.rv-stars .off{color:#d1d5db}
+.rv-score{font-weight:700}
+.rv-hint{color:var(--muted); font-size:11px; grid-column:1/-1}
+.rv-detail{display:none;margin-top:8px;border-top:1px solid var(--stroke);padding-top:8px}
+.rv-row{display:grid; grid-template-columns:52px 1fr 36px; gap:6px; align-items:center}
+.rv-row .label{color:var(--muted); font-size:12px}
+.rv-bar{height:6px; background:var(--chip); border:1px solid var(--stroke); border-radius:20px; overflow:hidden}
+.rv-bar>i{display:block;height:100%;background:#ffc400}
+.rv-count{font-size:12px;color:var(--muted);text-align:right}
+.rv-pop{display:flex; gap:8px; align-items:center; margin-top:6px}
+.rv-pop .meter{flex:1;height:8px;background:var(--chip);border:1px solid var(--stroke);border-radius:20px;overflow:hidden}
+.rv-pop .meter>i{display:block;height:100%;background:#1bffb3}
+.rv-pop .val{font-size:12px;color:var(--muted);min-width:78px;text-align:right}
+.kv-reviews.expanded .rv-detail{display:block}
+@media (min-width:900px){ .kv-reviews.expanded{grid-column:1/-1} }
+@media (max-width:899px){ .kv-reviews.expanded{grid-column:1/-1} }
 
-/* отзывы — компакт + разворот */
-.reviews{position:relative; margin-top:10px; padding-top:10px; border-top:1px solid var(--stroke)}
-.reviews.compact{--rv-max:140px; max-height:var(--rv-max); overflow:hidden; padding-bottom:26px}
-@media (min-width:720px){ .reviews.compact{--rv-max:120px} }
-.reviews.compact::after{
-  content:""; position:absolute; left:0; right:0; bottom:28px; height:48px;
-  background:linear-gradient(to bottom, rgba(0,0,0,0) 0%, var(--card) 80%); pointer-events:none;
-}
-.reviews-toggle{position:absolute; left:10px; right:10px; bottom:6px; display:flex; justify-content:flex-start}
-.reviews-toggle button{background:transparent; border:1px solid var(--stroke); color:var(--text); border-radius:999px; font-size:12px; padding:6px 10px; cursor:pointer}
-
-.rev-head{display:flex; align-items:center; gap:10px}
-.stars{display:inline-flex; gap:2px; font-size:18px; line-height:1}
-.star--on{color:#ffc400} .star--off{color:#d1d5db}
-.score{margin-left:auto;font-weight:700}
-.subhint{color:var(--muted); font-size:12px; margin:0 0 4px}
-.dist{display:grid; gap:6px}
-.dist-row{display:grid; grid-template-columns:60px 1fr 42px; gap:6px; align-items:center}
-.dist-row .label{color:var(--muted); font-size:12px}
-.bar{height:6px; background:var(--chip); border:1px solid var(--stroke); border-radius:20px; overflow:hidden}
-.bar>i{display:block; height:100%; background:#ffc400}
-.count{font-size:12px; color:var(--muted); text-align:right}
-.pop{display:flex; gap:8px; align-items:center; margin-top:4px}
-.pop .meter{flex:1; height:8px; background:var(--chip); border:1px solid var(--stroke); border-radius:20px; overflow:hidden}
-.pop .meter>i{display:block; height:100%; background:#1bffb3}
-.pop .val{font-size:12px; color:var(--muted); min-width:86px; text-align:right}
+/* ==== таблица (альтернативный вид) ==== */
+.table-wrap{display:none; margin-top:12px}
+.table{width:100%; border-collapse:collapse; overflow:auto}
+.table th,.table td{border:1px solid var(--stroke); padding:8px}
+.table th{background:var(--chip); color:var(--muted); text-align:left; font-weight:600}
+.table tr:nth-child(even){background:color-mix(in srgb, var(--chip) 50%, transparent)}
+.rating-badge{font-weight:700}
 
 /* разделители */
 .section-title{margin:18px 0 8px; font-size:18px; color:var(--text)}
 .section-hint{color:var(--muted); font-size:13px; margin-bottom:6px}
-
-/* адаптив */
-@media (min-width:720px){ .grid{grid-template-columns:repeat(4,minmax(0,1fr))} }
