@@ -1,5 +1,5 @@
 {
-  "updated_at": "2025-08-28T11:10:00+03:00",
+  "updated_at": "2025-08-28T12:20:00+03:00",
   "brand": "Winline",
   "sources": [
     "https://metaratings.ru/bonuses/winline-ru/promokody/",
@@ -18,8 +18,9 @@
       "status": "active",
       "tag": "приветственный фрибет",
       "codes": ["LEGALBET"],
-      "amount": { "min": 500, "max": 3000, "currency": "RUB", "label_badges": [] },
-      "audience": "новые пользователи",
+      "amount": { "min": 500, "max": 3000, "currency": "RUB", "label_badges": ["max"] },
+      "audience": "все пользователи (через приложение)",
+      "audience_badges": ["официальный источник"],
       "where": "в приложении Android/iOS при регистрации",
       "terms": {
         "days": null,
@@ -27,15 +28,11 @@
         "coef_max": 2.50,
         "deposit_min": 500,
         "withdraw_min": 0,
-        "chips": ["активация только в приложении", "депозит от 500 ₽", "чистая прибыль за вычетом фрибета"]
+        "chips": ["активация только в приложении", "после розыгрыша доступна чистая прибыль"]
       },
-      "badges_line": ["common"],
-      "reviews": {
-        "avg": 4.6,
-        "total": 320,
-        "dist": { "5": 230, "4": 60, "3": 20, "2": 5, "1": 5 },
-        "pop": 92
-      },
+      "term_badges": ["common","long"],
+      "summary": "Legalbet продвигает официальный приветственный фрибет Winline до 3000 ₽ с активацией исключительно в мобильном приложении. К выводу доступна только чистая прибыль после розыгрыша; минимальный депозит для дальнейших операций — 500 ₽. Срок не ограничен жёстко, но привязан к активности в приложении, поэтому удобен для плавного входа без спешки. Хороший выбор для новичков, которые хотят пройти все шаги в «белой» схеме.",
+      "reviews": { "avg": 4.6, "total": 320, "dist": { "5": 230, "4": 60, "3": 20, "2": 5, "1": 5 }, "pop": 92 },
       "rating": 92,
       "links": { "details": "https://legalbet.ru/bonus/winline-bezdepozitnie-fribeti-v-prilozhenii/" }
     },
@@ -46,54 +43,34 @@
       "status": "active",
       "tag": "приветственный фрибет",
       "codes": ["Promokodi"],
-      "amount": { "min": null, "max": 3000, "currency": "RUB", "label_badges": [] },
+      "amount": { "min": null, "max": 3000, "currency": "RUB", "label_badges": ["common"] },
       "audience": "новые пользователи",
-      "where": "ввод при регистрации",
-      "terms": {
-        "days": null,
-        "coef_min": 1.30,
-        "coef_max": 2.50,
-        "deposit_min": 500,
-        "withdraw_min": 0,
-        "chips": ["фрибет на первую ставку"]
-      },
-      "badges_line": ["common"],
-      "reviews": {
-        "avg": 4.3,
-        "total": 250,
-        "dist": { "5": 180, "4": 50, "3": 10, "2": 5, "1": 5 },
-        "pop": 88
-      },
+      "audience_badges": ["как у большинства"],
+      "where": "ввод кода при регистрации",
+      "terms": { "days": null, "coef_min": 1.30, "coef_max": 2.50, "deposit_min": 500, "withdraw_min": 0, "chips": ["фрибет на первую ставку"] },
+      "term_badges": ["common","long"],
+      "summary": "Promokodi.ru предлагает стандартный промокод Winline на фрибет до 3000 ₽ для новых клиентов. Код вводится на этапе регистрации; фрибет применяется к первой ставке, а к выводу доступна полученная чистая прибыль. Жёстких сроков нет, но действовать лучше в пределах рекламного периода. Универсальный вариант для тех, кто хочет аккуратно войти без гонки за короткими дедлайнами.",
+      "reviews": { "avg": 4.3, "total": 250, "dist": { "5": 180, "4": 50, "3": 10, "2": 5, "1": 5 }, "pop": 88 },
       "rating": 88,
       "links": { "details": null }
     },
     {
-      "source": "Рейтинг Букмекеров",
+      "source": "РБ (Рейтинг Букмекеров)",
       "source_url": "https://bookmaker-ratings.ru/bonusy-bukmeker/vinlajn/promokod-winline/",
       "updated": "2025-07-01",
       "status": "active",
       "tag": "приветственный фрибет",
       "codes": ["RBMAX"],
-      "amount": { "min": 50, "max": 3000, "currency": "RUB", "label_badges": [] },
+      "amount": { "min": 50, "max": 3000, "currency": "RUB", "label_badges": ["common"] },
       "audience": "новые пользователи",
-      "where": "ввод при регистрации",
-      "terms": {
-        "days": 30,
-        "coef_min": 1.30,
-        "coef_max": 2.50,
-        "deposit_min": 500,
-        "withdraw_min": 0,
-        "chips": ["идентификация обязательна", "чистая прибыль за вычетом фрибета"]
-      },
-      "badges_line": ["common"],
-      "reviews": {
-        "avg": 4.4,
-        "total": 280,
-        "dist": { "5": 200, "4": 55, "3": 15, "2": 5, "1": 5 },
-        "pop": 87
-      },
+      "audience_badges": ["эксклюзив РБ"],
+      "where": "ввод кода при регистрации",
+      "terms": { "days": 30, "coef_min": 1.30, "coef_max": 2.50, "deposit_min": 500, "withdraw_min": 0, "chips": ["идентификация обязательна", "чистая прибыль после розыгрыша"] },
+      "term_badges": ["long","best"],
+      "summary": "Код RBMAX от РБ даёт фрибет до 3000 ₽ с понятными лимитами и увеличенным сроком — до 30 дней. Подходит тем, кто не любит спешку и предпочитает тестировать сервис в комфортном темпе. Идентификация обязательна; вывод только чистой прибыли после отыгрыша. За счёт длительного окна активации предложение часто выигрывает у конкурентов по удобству.",
+      "reviews": { "avg": 4.4, "total": 280, "dist": { "5": 200, "4": 55, "3": 15, "2": 5, "1": 5 }, "pop": 87 },
       "rating": 86,
-      "links": { "details": null, "archive": null }
+      "links": { "details": null }
     },
     {
       "source": "Sports.ru",
@@ -102,24 +79,14 @@
       "status": "active",
       "tag": "фрибет в приложении",
       "codes": ["SPRTS"],
-      "amount": { "min": 50, "max": 3000, "currency": "RUB", "label_badges": [] },
+      "amount": { "min": 50, "max": 3000, "currency": "RUB", "label_badges": ["common"] },
       "audience": "новые пользователи",
+      "audience_badges": ["как у большинства"],
       "where": "только в мобильном приложении",
-      "terms": {
-        "days": 30,
-        "coef_min": 1.30,
-        "coef_max": 2.50,
-        "deposit_min": 500,
-        "withdraw_min": 0,
-        "chips": ["активация в приложении", "чистая прибыль, фрибет не возвращается"]
-      },
-      "badges_line": ["event"],
-      "reviews": {
-        "avg": 4.2,
-        "total": 180,
-        "dist": { "5": 120, "4": 40, "3": 10, "2": 5, "1": 5 },
-        "pop": 80
-      },
+      "terms": { "days": 30, "coef_min": 1.30, "coef_max": 2.50, "deposit_min": 500, "withdraw_min": 0, "chips": ["фрибет активируется в приложении", "чистая прибыль, тело фрибета не возвращается"] },
+      "term_badges": ["long"],
+      "summary": "Sports.ru продвигает мобильный сценарий: промокод для Winline работает через приложение и даёт до 3000 ₽ фрибета. Срок до 30 дней позволяет выбрать подходящий матч, а требования к коэффициентам остаются стандартными для акции. Предложение удобно тем, кто уже привык делать ставки со смартфона и хочет спокойно подобрать событие без жёстких дедлайнов.",
+      "reviews": { "avg": 4.2, "total": 180, "dist": { "5": 120, "4": 40, "3": 10, "2": 5, "1": 5 }, "pop": 80 },
       "rating": 84,
       "links": { "details": null }
     },
@@ -130,17 +97,14 @@
       "status": "active",
       "tag": "партнерский промокод",
       "codes": ["RPL"],
-      "amount": { "min": null, "max": 3000, "currency": "RUB", "label_badges": [] },
+      "amount": { "min": null, "max": 3000, "currency": "RUB", "label_badges": ["common"] },
       "audience": "новые/действующие (по условиям акции)",
+      "audience_badges": ["событийная акция"],
       "where": "по ссылке, регистрация/ЛК",
       "terms": { "days": null, "coef_max": null, "withdraw_min": null, "chips": ["условия зависят от акции"] },
-      "badges_line": ["event"],
-      "reviews": {
-        "avg": 4.0,
-        "total": 120,
-        "dist": { "5": 70, "4": 30, "3": 10, "2": 5, "1": 5 },
-        "pop": 70
-      },
+      "term_badges": ["common","long"],
+      "summary": "Boxberry публикует партнёрский код RPL: номинал до 3000 ₽, но фактические условия зависят от текущей акции. Код может подойти и новым, и действующим пользователям — ориентируйтесь на описание самой промо-кампании. Сроки обычно не жёсткие; лучше проверить нюансы перед активацией, чтобы не упустить временные ограничения или ограниченные рынки.",
+      "reviews": { "avg": 4.0, "total": 120, "dist": { "5": 70, "4": 30, "3": 10, "2": 5, "1": 5 }, "pop": 70 },
       "rating": 78,
       "links": { "details": null }
     },
@@ -151,17 +115,14 @@
       "status": "active",
       "tag": "приветственный фрибет",
       "codes": ["Clan", "Sportclan"],
-      "amount": { "min": null, "max": 3000, "currency": "RUB", "label_badges": [] },
+      "amount": { "min": null, "max": 3000, "currency": "RUB", "label_badges": ["common"] },
       "audience": "новые пользователи",
+      "audience_badges": ["как у большинства"],
       "where": "регистрация/ЛК",
       "terms": { "days": null, "coef_max": null, "withdraw_min": 0, "chips": [] },
-      "badges_line": ["common"],
-      "reviews": {
-        "avg": 3.9,
-        "total": 90,
-        "dist": { "5": 50, "4": 20, "3": 10, "2": 5, "1": 5 },
-        "pop": 65
-      },
+      "term_badges": ["common","long"],
+      "summary": "Sportclan предлагает базовый промокод Winline до 3000 ₽ с активацией через регистрацию или личный кабинет. Жёстких сроков обычно нет, но лучше ориентироваться на текущие правила акции. Оптимальный вариант «не спеша» для тех, кто сначала хочет разобраться с интерфейсом и верификацией, а уже потом играть более активно.",
+      "reviews": { "avg": 3.9, "total": 90, "dist": { "5": 50, "4": 20, "3": 10, "2": 5, "1": 5 }, "pop": 65 },
       "rating": 76,
       "links": { "details": null }
     }
