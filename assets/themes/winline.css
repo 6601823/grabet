@@ -1,0 +1,49 @@
+/* === WINLINE theme === */
+:root{
+  --bg:#ffffff; --card:#f7f8fa; --text:#14161a; --muted:#6b7280;
+  --stroke:#d1d5db; --chip:#eef1f5;
+  --primary:#ff7a00; --primary-contrast:#111111;
+  --ok:#22c55e; --warn:#f59e0b; --bad:#ef4444;
+}
+:root[data-theme="dark"]{
+  --bg:#121212; --card:#191b1f; --text:#f2f3f5; --muted:#a0a7b4;
+  --stroke:#272b32; --chip:#20242a;
+  --primary:#ff7a00; --primary-contrast:#111111;
+  --ok:#24d37c; --warn:#ffb74d; --bad:#ff5b5b;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme]){
+    --bg:#121212; --card:#191b1f; --text:#f2f3f5; --muted:#a0a7b4;
+    --stroke:#272b32; --chip:#20242a;
+    --primary:#ff7a00; --primary-contrast:#111111;
+    --ok:#24d37c; --warn:#ffb74d; --bad:#ff5b5b;
+  }
+}
+/* лёгкая «кожа» Winline, размеров не меняет */
+.card{
+  background:
+    radial-gradient(120% 140% at 110% -40%, color-mix(in srgb, var(--primary) 12%, transparent) 0%, transparent 40%),
+    repeating-linear-gradient(135deg, color-mix(in srgb, #000 6%, transparent) 0 10px, transparent 10px 20px),
+    var(--card);
+  border-color: color-mix(in srgb, #000 10%, var(--stroke));
+}
+.kv{
+  background:
+    linear-gradient(180deg, color-mix(in srgb, #fff 7%, transparent) 0%, color-mix(in srgb, #000 8%, transparent) 100%),
+    repeating-linear-gradient(135deg, color-mix(in srgb, #000 5%, transparent) 0 8px, transparent 8px 16px),
+    var(--chip);
+  border-color: color-mix(in srgb, #000 16%, var(--stroke));
+}
+.btn.primary{
+  background: var(--primary); color: var(--primary-contrast);
+  border-color: color-mix(in srgb, #000 10%, var(--primary));
+  box-shadow: 0 0 0 1px color-mix(in srgb, #fff 16%, transparent) inset,
+              0 10px 22px color-mix(in srgb, var(--primary) 28%, transparent);
+}
+.btn.primary:hover{ filter:brightness(1.05); }
+.copy-btn,.btn.outline{ background:transparent; border-color: color-mix(in srgb, #000 35%, var(--stroke)); }
+.copy-btn:hover,.btn.outline:hover{
+  background: color-mix(in srgb, var(--primary) 10%, transparent);
+  color: var(--primary-contrast); border-color: var(--primary);
+}
+.codepill{ border-color: var(--primary); background: color-mix(in srgb, var(--primary) 9%, transparent); }
