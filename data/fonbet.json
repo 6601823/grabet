@@ -11,9 +11,11 @@
       "amount": { "min": null, "max": 15000, "currency": "RUB", "label_badges": ["max","common"] },
       "audience": "новые пользователи",
       "where": "при регистрации",
-      "terms": { "days": 7, "coef_max": 3.0, "withdraw_min": 100, "chips": ["ввод кода при регистрации","вывод после пополнения ≥ 100 ₽","чистая прибыль после использования"] },
+      "terms": { "days": 7, "coef_max": 3.0, "withdraw_min": 100, "chips": ["ввод кода при регистрации","вывод ≥ 100 ₽","чистая прибыль после использования"] },
+      "notes": [],
       "badges_line": [],
-      "reviews": { "avg": 4.5, "total": 516, "dist": { "5":345,"4":124,"3":22,"2":15,"1":10 }, "pop": 90 },
+      "reviews": { "avg": 4.5, "total": 516, "dist": { "5":345, "4":124, "3":22, "2":15, "1":10 }, "pop": 90 },
+      "rating": 92,
       "links": { "details": "#", "archive": "#" }
     },
     {
@@ -26,8 +28,10 @@
       "audience": "новые пользователи",
       "where": "по ссылке/регистрация",
       "terms": { "days": 7, "coef_max": 3.0, "withdraw_min": 0, "chips": ["активация по ссылке","вывод после пополнения"] },
-      "badges_line": ["min","common"], 
-      "reviews": { "avg": 4.0, "total": 260, "dist": { "5":130,"4":78,"3":31,"2":13,"1":8 }, "pop": 80 },
+      "notes": [],
+      "badges_line": ["min","common"],
+      "reviews": { "avg": 4.0, "total": 260, "dist": { "5":130, "4":78, "3":31, "2":13, "1":8 }, "pop": 80 },
+      "rating": 85,
       "links": { "details": "#" }
     },
     {
@@ -35,13 +39,15 @@
       "updated": "2025-08-20",
       "status": "active",
       "tag": "бездепозитный фрибет",
-      "codes": ["RBMAX","РБМАКС"],
+      "codes": ["RBMAX", "РБМАКС"],
       "amount": { "min": 100, "max": 15000, "currency": "RUB", "label_badges": [] },
       "audience": "новые пользователи",
       "where": "регистрация или ЛК",
-      "terms": { "days": 7, "coef_max": 3.0, "withdraw_min": 100, "chips": ["поддержка кириллического кода","вывод после пополнения ≥ 100 ₽"] },
+      "terms": { "days": 7, "coef_max": 3.0, "withdraw_min": 100, "chips": ["поддержка кириллического кода","вывод ≥ 100 ₽"] },
+      "notes": [],
       "badges_line": ["min","common"],
-      "reviews": { "avg": 4.8, "total": 258, "dist": { "5":216,"4":29,"3":2,"2":4,"1":7 }, "pop": 96 },
+      "reviews": { "avg": 4.8, "total": 258, "dist": { "5":216, "4":29, "3":2, "2":4, "1":7 }, "pop": 96 },
+      "rating": 96,
       "links": { "details": "#" }
     },
     {
@@ -54,29 +60,16 @@
       "audience": "новые пользователи",
       "where": "регистрация/ЛК",
       "terms": { "days": 7, "coef_max": 3.0, "withdraw_min": 0, "chips": ["вывод после пополнения"] },
+      "notes": [],
       "badges_line": [],
-      "reviews": { "avg": 4.2, "total": 180, "dist": { "5":104,"4":47,"3":16,"2":7,"1":6 }, "pop": 78 },
-      "links": { "details": "#" }
-    },
-    {
-      "source": "Boxberry",
-      "updated": "—",
-      "status": "active",
-      "tag": "фрибет за событие",
-      "codes": ["SUPERCUP","UFC"],
-      "amount": { "min": 500, "max": 500, "currency": "RUB", "label_badges": [] },
-      "audience": "зарегистрированные",
-      "where": "ЛК (акции)",
-      "terms": { "days": null, "coef_max": null, "withdraw_min": 0, "chips": ["не приветственный бонус","нужна квалифицирующая ставка"] },
-      "badges_line": ["event"],
-      "reviews": { "avg": 3.9, "total": 60, "dist": { "5":25,"4":18,"3":9,"2":5,"1":3 }, "pop": 60 },
+      "reviews": { "avg": 4.2, "total": 180, "dist": { "5":104, "4":47, "3":16, "2":7, "1":6 }, "pop": 78 },
+      "rating": 88,
       "links": { "details": "#" }
     }
   ],
   "expired_offers": [
-    { "source": "Legalbet", "updated": "истёк: 2025-06-30", "status":"expired", "tag":"бездепозитный фрибет", "codes":["EUROLEGALBET3"], "amount":{"min":null,"max":10000,"currency":"RUB"}, "terms":{"days":7,"coef_max":3.0}, "links":{} },
-    { "source": "РБ", "updated": "истёк: 2025-05-15", "status":"expired", "tag":"бездепозитный фрибет", "codes":["PGL"], "amount":{"min":500,"max":10000,"currency":"RUB"}, "terms":{"days":5,"coef_max":2.5}, "links":{} },
-    { "source": "Sports.ru", "updated": "истёк: 2025-04-10", "status":"expired", "tag":"акция", "codes":["FONSPRING"], "amount":{"min":300,"max":300,"currency":"RUB"}, "terms":{"days":3,"coef_max":3.0}, "links":{} }
+    { "source":"Legalbet","updated":"истёк: 2025-06-30","status":"expired","tag":"бездепозитный фрибет","codes":["EUROLEGALBET3"],"amount":{"min":null,"max":10000,"currency":"RUB"},"terms":{"days":7,"coef_max":3.0},"links":{} },
+    { "source":"РБ","updated":"истёк: 2025-05-15","status":"expired","tag":"бездепозитный фрибет","codes":["PGL"],"amount":{"min":500,"max":10000,"currency":"RUB"},"terms":{"days":5,"coef_max":2.5},"links":{} },
+    { "source":"Sports.ru","updated":"истёк: 2025-04-10","status":"expired","tag":"акция","codes":["FONSPRING"],"amount":{"min":300,"max":300,"currency":"RUB"},"terms":{"days":3,"coef_max":3.0},"links":{} }
   ]
 }
-
