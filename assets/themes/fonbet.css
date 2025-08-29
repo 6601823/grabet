@@ -1,156 +1,134 @@
-/* === FONBET THEME (только стили бренда) === */
-/* Светлая (основная у Fonbet: бело-серая с красным акцентом) */
+/* === FONBET theme — обновлено для карточек с внутренними оценками === */
+
+/* Цвета темы */
 :root{
+  --bg:#0e0f12;
+  --card:#15171c;
+  --codes:#1b1f27;      /* фон блока codes — контрастнее страницы */
+  --kv:#11131a;         /* фон ячеек grid — контрастнее codes */
+  --text:#f3f5f7;
+  --muted:#a7b0be;
+  --stroke:#232834;
+  --chip:#202633;
+
+  --primary:#e41d2f;
+  --primary-contrast:#ffffff;
+
+  --ok:#22c55e; --warn:#f59e0b; --bad:#ef4444;
+}
+
+/* Светлая/тёмная переключаются системно и кнопкой */
+:root[data-theme="light"]{
   --bg:#ffffff;
-  --card:#f7f7f7;
-  --text:#111111;
-  --muted:#666666;
-  --stroke:#dddddd;
-  --chip:#f1f1f1;
+  --card:#f6f7fa;
+  --codes:#eef1f6;
+  --kv:#e7ebf3;
+  --text:#14161a;
+  --muted:#6b7280;
+  --stroke:#d1d5db;
+  --chip:#e9eef6;
 
-  --primary:#e50029;           /* фирменный красный Fonbet */
-  --primary-contrast:#ffffff;
-
-  --ok:#2ecc71;
-  --warn:#f39c12;
-  --bad:#e74c3c;
+  --primary:#e41d2f; --primary-contrast:#ffffff;
 }
 
-/* Тёмная версия — чёрно-серая с ярко-красным акцентом */
-:root[data-theme="dark"]{
-  --bg:#0f0f0f;
-  --card:#181818;
-  --text:#eaeaea;
-  --muted:#999999;
-  --stroke:#2a2a2a;
-  --chip:#222222;
+body{ background:var(--bg); color:var(--text); font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif; }
 
-  --primary:#ff3344;
-  --primary-contrast:#ffffff;
-
-  --ok:#27d17a;
-  --warn:#ffb84d;
-  --bad:#ff6b6b;
-}
-
-/* Если пользователь не выбирал вручную — уважаем системную тёмную */
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme]){
-    --bg:#0f0f0f; --card:#181818; --text:#eaeaea; --muted:#999999;
-    --stroke:#2a2a2a; --chip:#222222;
-    --primary:#ff3344; --primary-contrast:#ffffff;
-    --ok:#27d17a; --warn:#ffb84d; --bad:#ff6b6b;
-  }
-}
-
-/* ====== ДАЛЕЕ — «кожа» Fonbet для наших компонентов ====== */
-/* НИЧЕГО не меняет в размерах/сетке — только фон/бордеры/кнопки */
-
-/* Большая карточка (фон контейнера в духе fon.bet) */
+/* Карточка */
 .card{
-  /* лёгкий красный «ореол» + мягкие диагонали, без изображений */
   background:
-    /* лёгкий красный градиент слева-сверху */
-    radial-gradient(120% 140% at -10% -30%, color-mix(in srgb, var(--primary) 12%, transparent) 0%, transparent 40%),
-    /* едва заметные диагонали */
-    repeating-linear-gradient(
-      135deg,
-      color-mix(in srgb, #000 6%, transparent) 0 10px,
-      transparent 10px 20px
-    ),
+    linear-gradient(180deg, color-mix(in srgb, #fff 8%, transparent) 0%, transparent 60%),
+    radial-gradient(160% 120% at 120% -40%, color-mix(in srgb, var(--primary) 10%, transparent) 0%, transparent 45%),
     var(--card);
-  border-color: color-mix(in srgb, #000 14%, var(--stroke));
-  box-shadow:
-    0 1px 0 color-mix(in srgb, #000 20%, transparent),
-    0 10px 24px color-mix(in srgb, #000 40%, transparent);
+  border:1px solid var(--stroke);
+  border-radius:16px;
+  padding:14px 16px;
+  box-shadow: 0 12px 30px color-mix(in srgb, #000 35%, transparent);
 }
 
-/* Внутренние плитки (Сумма/Для кого/Срок/Отзывы) — «панели» как на fon.bet */
+/* Шапка карточки */
+.card__top{ display:flex; align-items:center; gap:10px; }
+.card__top .src{ font-weight:700; letter-spacing:.2px; }
+.badge{ background: color-mix(in srgb, var(--primary) 14%, transparent); border:1px dashed color-mix(in srgb, var(--primary) 50%, var(--stroke)); padding:4px 10px; border-radius:10px; font-size:13px; }
+.meta{ margin-left:auto; display:flex; gap:10px; align-items:center; color:var(--muted); }
+.status.active{ background:#1b3d24; color:#8df0b0; border-radius:10px; padding:2px 8px; font-size:12px; }
+.status.exp{ background:#3a1d1d; color:#ffa5a5; border-radius:10px; padding:2px 8px; font-size:12px; }
+
+/* Коды — контрастнее страницы */
+.codes{
+  margin-top:10px; display:flex; flex-wrap:wrap; gap:10px;
+  background:var(--codes); border:1px solid color-mix(in srgb, #000 25%, var(--stroke));
+  border-radius:12px; padding:10px;
+}
+.codepill{ display:flex; align-items:center; gap:8px; border:1px dashed color-mix(in srgb, var(--primary) 50%, var(--stroke)); background:color-mix(in srgb, var(--primary) 10%, transparent); border-radius:10px; padding:6px 10px; }
+.codepill span{ font-weight:700; letter-spacing:.3px; }
+.copy-btn{ border:1px solid color-mix(in srgb, var(--primary) 50%, var(--stroke)); background:transparent; color:var(--text); padding:4px 8px; border-radius:8px; font-size:13px; }
+.copy-btn:hover{ background:color-mix(in srgb, var(--primary) 18%, transparent); }
+
+/* GRID — ячейки контрастнее codes, минимум 14px */
+.grid{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin-top:12px; }
 .kv{
-  background:
-    linear-gradient(180deg,
-      color-mix(in srgb, #fff 6%, transparent) 0%,
-      color-mix(in srgb, #000 8%, transparent) 100%
-    ),
-    /* тонкие диагонали внутри панели */
-    repeating-linear-gradient(
-      135deg,
-      color-mix(in srgb, #000 7%, transparent) 0 8px,
-      transparent 8px 16px
-    ),
-    var(--chip);
-  border-color: color-mix(in srgb, #000 18%, var(--stroke));
+  background:var(--kv);
+  border:1px solid color-mix(in srgb, #000 30%, var(--stroke));
+  border-radius:12px; padding:10px; font-size:14px; min-height:78px;
+  position:relative; overflow:hidden;
+}
+.kv b{ display:block; color:var(--muted); font-weight:600; margin-bottom:6px; font-size:13px; }
+
+/* Значения в ячейках: сумма выделена сильнее */
+.v{ font-weight:600; letter-spacing:.2px; }
+.kv-money .v-money{
+  font-size:20px; line-height:1.15; font-weight:800;
+  text-shadow:0 1px 0 color-mix(in srgb, #000 50%, transparent);
 }
 
-/* Тёмная тема — чуть усиленные контрасты полос для читаемости */
-:root[data-theme="dark"] .kv{
-  background:
-    linear-gradient(180deg,
-      color-mix(in srgb, #fff 5%, transparent) 0%,
-      color-mix(in srgb, #000 14%, transparent) 100%
-    ),
-    repeating-linear-gradient(
-      135deg,
-      color-mix(in srgb, #fff 4%, transparent) 0 8px,
-      transparent 8px 16px
-    ),
-    var(--chip);
-  border-color: color-mix(in srgb, #000 35%, var(--stroke));
+/* Внутренние «номинации» ячейки */
+.kv-badges{ position:absolute; left:10px; bottom:8px; display:flex; gap:8px; flex-wrap:wrap; }
+.nom{ display:inline-block; padding:4px 8px; border-radius:999px; font-size:12px; border:1px solid color-mix(in srgb, #000 35%, var(--stroke)); background:color-mix(in srgb, #fff 5%, transparent); color:var(--text); }
+.nom--max{ background:color-mix(in srgb, #2cc36b 18%, transparent); border-color:#2cc36b; }
+.nom--min{ background:color-mix(in srgb, #f59e0b 18%, transparent); border-color:#f59e0b; }
+.nom--common{ background:color-mix(in srgb, #64748b 18%, transparent); border-color:#64748b; }
+.nom--best{ background:color-mix(in srgb, #7c3aed 18%, transparent); border-color:#7c3aed; }
+.nom--short{ background:color-mix(in srgb, #ef4444 18%, transparent); border-color:#ef4444; }
+.nom--long{ background:color-mix(in srgb, #0891b2 18%, transparent); border-color:#0891b2; }
+
+/* Чипсы-нюансы */
+.chips{ margin-top:10px; display:flex; gap:8px; flex-wrap:wrap; }
+.chip{ background:var(--chip); border:1px solid color-mix(in srgb, #000 25%, var(--stroke)); padding:6px 10px; border-radius:999px; font-size:13px; color:var(--text); }
+
+/* Отзывы (как было) */
+.kv-reviews .rv-mini{ display:flex; gap:12px; align-items:center; }
+.rv-stars span{ font-size:16px; }
+.rv-stars .on{ color:#ffd15a; } .rv-stars .off{ color:#666c76; }
+.rv-hint{ color:var(--muted); font-size:12px; }
+.rv-score{ font-weight:800; }
+.kv-reviews .rv-detail{ margin-top:10px; display:none; }
+.kv-reviews.expanded .rv-detail{ display:block; }
+.rv-row{ display:grid; grid-template-columns:70px 1fr 42px; align-items:center; gap:8px; margin:3px 0; }
+.rv-bar{ height:6px; background:color-mix(in srgb, #000 45%, var(--stroke)); border-radius:999px; overflow:hidden; }
+.rv-bar i{ display:block; height:100%; background:#ffd15a; }
+.rv-pop{ display:flex; gap:10px; align-items:center; margin-top:6px; }
+.meter{ width:160px; height:8px; background:color-mix(in srgb, #000 45%, var(--stroke)); border-radius:999px; overflow:hidden; }
+.meter i{ display:block; height:100%; background:linear-gradient(90deg,#22c55e,#eab308); }
+
+/* Итоговый вывод */
+.summary{
+  margin-top:12px; background:color-mix(in srgb, var(--primary) 8%, transparent);
+  border:1px solid color-mix(in srgb, var(--primary) 35%, var(--stroke));
+  border-radius:12px; padding:12px; line-height:1.45; font-size:14px;
 }
 
-/* Панель-тулбар тоже слегка «фонбетная» */
-.toolbar{
-  background:
-    linear-gradient(180deg,
-      color-mix(in srgb, var(--primary) 6%, transparent) 0%,
-      transparent 60%
-    ),
-    var(--card);
-  border-color: color-mix(in srgb, #000 12%, var(--stroke));
-}
+/* Ссылки */
+.links{ margin-top:10px; display:flex; gap:14px; flex-wrap:wrap; }
+.link{ color:#9db4ff; text-decoration:underline dashed; }
 
-/* Кнопки внутри карточек — как на fon.bet */
-.btn.primary{
-  background: var(--primary);
-  color: var(--primary-contrast);
-  border-color: color-mix(in srgb, #000 10%, var(--primary));
-  box-shadow:
-    0 0 0 1px color-mix(in srgb, #fff 18%, transparent) inset,
-    0 10px 22px color-mix(in srgb, var(--primary) 30%, transparent);
-}
-.btn.primary:hover{
-  filter: brightness(1.05);
-  box-shadow:
-    0 0 0 1px color-mix(in srgb, #fff 24%, transparent) inset,
-    0 12px 26px color-mix(in srgb, var(--primary) 40%, transparent);
-}
+/* Таблица и прочее — наследуем из base.css; здесь только акценты */
+.rating-badge{ font-weight:700; }
 
-/* «Прозрачные»/обводочные — белый контур на тёмном, тёмный на светлом */
-.btn.outline, .copy-btn{
-  background: transparent;
-  border-color: color-mix(in srgb, #fff 55%, var(--stroke));
+/* Адаптив */
+@media (max-width: 980px){
+  .grid{ grid-template-columns:repeat(2,minmax(0,1fr)); }
 }
-:root[data-theme="light"] .btn.outline, 
-:root[data-theme="light"] .copy-btn{
-  border-color: color-mix(in srgb, #000 35%, var(--stroke));
+@media (max-width: 560px){
+  .grid{ grid-template-columns:1fr; }
+  .codepill span{ font-size:14px; }
 }
-.btn.outline:hover, .copy-btn:hover{
-  background: color-mix(in srgb, var(--primary) 12%, transparent);
-  color: var(--primary-contrast);
-  border-color: var(--primary);
-}
-
-/* Код-пилюля — красная пунктирная, как у промоблоков */
-.codepill{
-  border-color: var(--primary);
-  background: color-mix(in srgb, var(--primary) 10%, transparent);
-}
-
-/* Бейджи-пилюли: делаем их чуть «стеклянными» */
-.badge{
-  background: color-mix(in srgb, #fff 10%, var(--chip));
-  border-color: color-mix(in srgb, #000 20%, var(--stroke));
-}
-
-/* Мелкий штрих — «чёрточка» в списке ссылок */
-.link{ border-bottom:1px dashed color-mix(in srgb, var(--primary) 60%, transparent); }
