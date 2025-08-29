@@ -9,6 +9,7 @@
 </head>
 <body>
 <div class="wrap">
+
   <h1>Промокоды Winline — сравнение</h1>
   <div class="hint">Обновлено: {{ data.updated_at }}. Активные сверху; истёкшие — ниже и присутствуют и в карточках, и в таблице.</div>
 
@@ -32,7 +33,6 @@
     <button class="theme-btn" id="themeToggle">Тёмная/Светлая тема</button>
   </div>
 
-  <!-- Активные: карточки -->
   <div id="cardsActive">
     {% if data.active_offers|length == 0 %}
       <article class="card"><div class="card__top"><div class="src">Данные уточняются</div><span class="badge">ожидаем парсинг</span></div></article>
@@ -61,7 +61,15 @@
       <div class="grid">
         <div class="kv"><b>Сумма</b> {% if o.amount.min %}{{ o.amount.min }}–{% endif %}{{ o.amount.max or '—' }} ₽</div>
         <div class="kv"><b>Для кого</b> {{ o.audience or '—' }}</div>
-        <div class="kv"><b>Срок</b> {{ o.terms.days or '—' }} дней</div>
+
+        <!-- СРОК c «Бессрочный» -->
+        <div class="kv"><b>Срок</b>
+          {% if o.terms.days %}
+            {{ o.terms.days }} дней
+          {% else %}
+            Бессрочный
+          {% endif %}
+        </div>
 
         <div class="kv kv-reviews" data-reviews>
           <b>Отзывы о промокоде</b>
@@ -103,7 +111,6 @@
     {% endfor %}
   </div>
 
-  <!-- Активные: таблица -->
   <div id="tableActive" class="table-wrap">
     <table class="table" id="offersTable">
       <thead>
@@ -118,7 +125,10 @@
           <td>{{ o.source }}</td>
           <td>{% if o.codes|length %}{{ o.codes|join(', ') }}{% else %}—{% endif %}</td>
           <td>{% if o.amount.min %}{{ o.amount.min }}–{% endif %}{{ o.amount.max or '—' }} ₽</td>
-          <td>{{ o.terms.days or '—' }} д.</td>
+
+          <!-- СРОК в таблице -->
+          <td>{% if o.terms.days %}{{ o.terms.days }} д.{% else %}Бессрочный{% endif %}</td>
+
           <td>
             {% if o.terms.coef_max %}≤ {{ o.terms.coef_max }}{% endif %}
             {% if o.terms.withdraw_min %}; вывод ≥ {{ o.terms.withdraw_min }} ₽{% endif %}
@@ -134,7 +144,6 @@
     </table>
   </div>
 
-  <!-- Истёкшие -->
   <div class="section-title">Истёкшие промокоды</div>
   <div class="section-hint">Не активны. Оставлены для истории. В режиме «Таблица» показаны ниже активных.</div>
 
@@ -149,7 +158,7 @@
       <div class="codes">{% for c in o.codes %}<div class="codepill"><span>{{ c }}</span></div>{% endfor %}</div>
       <div class="grid">
         <div class="kv"><b>Сумма</b> {% if o.amount.min %}{{ o.amount.min }}–{% endif %}{{ o.amount.max or '—' }} ₽</div>
-        <div class="kv"><b>Срок</b> {{ o.terms.days or '—' }} дней</div>
+        <div class="kv"><b>Срок</b>{% if o.terms.days %} {{ o.terms.days }} дней{% else %} Бессрочный{% endif %}</div>
         <div class="kv"><b>Тип</b> {{ o.tag }}</div>
         <div class="kv"><b>Источник</b> <a class="link" href="{{ o.source_url }}">ссылка</a></div>
       </div>
@@ -171,7 +180,7 @@
           <td>{{ o.source }}</td>
           <td>{% if o.codes|length %}{{ o.codes|join(', ') }}{% else %}—{% endif %}</td>
           <td>{% if o.amount.min %}{{ o.amount.min }}–{% endif %}{{ o.amount.max or '—' }} ₽</td>
-          <td>{{ o.terms.days or '—' }} д.</td>
+          <td>{% if o.terms.days %}{{ o.terms.days }} д.{% else %}Бессрочный{% endif %}</td>
           <td>{% if o.terms.chips %}{{ o.terms.chips|join('; ') }}{% else %}—{% endif %}</td>
           <td>истёк</td>
           <td>{{ o.updated }}</td>
@@ -180,6 +189,7 @@
       </tbody>
     </table>
   </div>
+
 </div>
 
 <script>
@@ -197,11 +207,12 @@ if(b.dataset.view==='table'){ta.style.display='block';te.style.display='block';c
 doSort();});})();
 const sortSel=document.getElementById('sort');sortSel?.addEventListener('change',doSort);
 function doSort(){const m=sortSel?.value||'grabet';
-const keyFn=(el)=>{const ts=Date.parse(el.getAttribute('data-date')||'')||0;const max=+(el.getAttribute('data-max')||0);const avg=+(el.getAttribute('data-avg')||0);const rating=+(el.getAttribute('data-rating')||0);
+const keyFn=(el)=>{const ts=Date.parse(el.getAttribute('data-date')||'')||0;const max=+(el.getAttribute('data-max')||0);const avg=+(el.getAttribute('data-avg')||0);let rating=+(el.getAttribute('data-rating')||0);
+if (el.querySelector('.kv b')?.textContent.trim()==='Срок' && /Бессрочный/.test(el.textContent)) rating=Math.max(0,rating-5);
 switch(m){case'date':return ts;case'amount':return max;case'reviews':return avg;default:return rating;}};
 const wrap=document.getElementById('cardsActive');if(wrap && wrap.style.display!=='none'){[...wrap.querySelectorAll('.card')].sort((a,b)=>keyFn(b)-keyFn(a)).forEach(n=>wrap.insertBefore(n,wrap.firstChild));}
 const tb=document.querySelector('#offersTable tbody');if(tb && document.getElementById('tableActive').style.display!=='none'){[...tb.querySelectorAll('tr')].sort((a,b)=>keyFn(b)-keyFn(a)).forEach(r=>tb.appendChild(r));}
-const exWrap=document.getElementById('expiredCards');if(exWrap){[...exWrap.querySelectorAll('.card')].sort((a,b)=>(Date.parse(b.getAttribute('data-date')||'')||0)-(Date.parse(a.getAttribute('data-date')||'')||0)).forEach(n=>exWrap.appendChild(n));}
+const exWrap=document.getElementById('expiredCards');if(exWrap){[...exWrap.querySelectorAll('card')].sort((a,b)=>(Date.parse(b.getAttribute('data-date')||'')||0)-(Date.parse(a.getAttribute('data-date')||'')||0));}
 const exBody=document.querySelector('#expiredTable tbody');if(exBody){[...exBody.querySelectorAll('tr')].sort((a,b)=>(Date.parse(b.getAttribute('data-date')||'')||0)-(Date.parse(a.getAttribute('data-date')||'')||0)).forEach(r=>exBody.appendChild(r));}}
 doSort();
 </script>
