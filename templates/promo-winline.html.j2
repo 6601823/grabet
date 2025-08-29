@@ -33,41 +33,67 @@
     <button class="theme-btn" id="themeToggle">Тёмная/Светлая тема</button>
   </div>
 
+  <!-- Карточки активных -->
   <div id="cardsActive">
-    {% if data.active_offers|length == 0 %}
-      <article class="card"><div class="card__top"><div class="src">Данные уточняются</div><span class="badge">ожидаем парсинг</span></div></article>
-    {% endif %}
     {% for o in data.active_offers %}
-    <article class="card" data-date="{{ o.updated }}" data-max="{{ o.amount.max or 0 }}" data-avg="{{ o.reviews.avg or 0 }}" data-rating="{{ o.rating or 0 }}">
+    <article class="card"
+      data-date="{{ o.updated }}"
+      data-max="{{ o.amount.max or 0 }}"
+      data-avg="{{ o.reviews.avg or 0 }}"
+      data-rating="{{ o.rating or 0 }}">
+
       <div class="card__top">
         <div class="src">{{ o.source }}</div>
         <span class="badge">{{ o.tag }}</span>
-        <div class="meta"><span class="updated">обновлено: {{ o.updated }}</span><span class="status active">активно</span></div>
+        <div class="meta">
+          <span class="updated">обновлено: {{ o.updated }}</span>
+          <span class="status active">активно</span>
+        </div>
       </div>
 
       <div class="codes">
-        {% for c in o.codes %}<div class="codepill" data-code="{{ c }}"><span>{{ c }}</span><button class="copy-btn" data-copy>Копировать</button></div>{% endfor %}
+        {% for c in o.codes %}
+          <div class="codepill" data-code="{{ c }}"><span>{{ c }}</span><button class="copy-btn" data-copy>Копировать</button></div>
+        {% endfor %}
         {% if o.codes|length == 0 %}<span class="chip">код вводится по ссылке/в ЛК</span>{% endif %}
       </div>
 
-      {% if o.badges_line and o.badges_line|length %}
-      <div class="nomline">
-        {% for b in o.badges_line %}
-          <span class="nom nom--{{ b }}">{% if b=='min' %}самый маленький встречается{% elif b=='max' %}самый большой{% elif b=='common' %}как у большинства{% elif b=='event' %}событийная акция{% else %}{{ b }}{% endif %}</span>
-        {% endfor %}
-      </div>
-      {% endif %}
-
       <div class="grid">
-        <div class="kv"><b>Сумма</b> {% if o.amount.min %}{{ o.amount.min }}–{% endif %}{{ o.amount.max or '—' }} ₽</div>
-        <div class="kv"><b>Для кого</b> {{ o.audience or '—' }}</div>
+        <div class="kv kv-money">
+          <b>Сумма</b>
+          <div class="v-money">{% if o.amount.min %}{{ o.amount.min }}–{% endif %}{{ o.amount.max or '—' }} ₽</div>
+          {% if o.amount.label_badges and o.amount.label_badges|length %}
+          <div class="kv-badges">
+            {% for b in o.amount.label_badges %}
+            <span class="nom nom--{{ b }}">
+              {% if b=='min' %}самый маленький{% elif b=='max' %}самый большой{% elif b=='common' %}как у большинства{% else %}{{ b }}{% endif %}
+            </span>
+            {% endfor %}
+          </div>
+          {% endif %}
+        </div>
 
-        <!-- СРОК c «Бессрочный» -->
-        <div class="kv"><b>Срок</b>
-          {% if o.terms.days %}
-            {{ o.terms.days }} дней
-          {% else %}
-            Бессрочный
+        <div class="kv">
+          <b>Для кого</b>
+          <div class="v">{{ o.audience or '—' }}</div>
+          {% if o.audience_badges and o.audience_badges|length %}
+          <div class="kv-badges">
+            {% for b in o.audience_badges %}<span class="nom nom--common">{{ b }}</span>{% endfor %}
+          </div>
+          {% endif %}
+        </div>
+
+        <div class="kv">
+          <b>Срок</b>
+          <div class="v">{% if o.terms.days %}{{ o.terms.days }} дней{% else %}Бессрочный{% endif %}</div>
+          {% if o.term_badges and o.term_badges|length %}
+          <div class="kv-badges">
+            {% for b in o.term_badges %}
+              <span class="nom nom--{{ b }}">
+                {% if b=='best' %}лучшее предложение{% elif b=='common' %}как у всех{% elif b=='short' %}короткий срок{% elif b=='long' %}долгий срок{% else %}{{ b }}{% endif %}
+              </span>
+            {% endfor %}
+          </div>
           {% endif %}
         </div>
 
@@ -92,9 +118,11 @@
               <div class="rv-row"><div class="label">{{ k }} звёзд</div><div class="rv-bar"><i style="width: {{ (cnt/total*100)|round(1) }}%"></i></div><div class="rv-count">{{ cnt }}</div></div>
             {% endfor %}
             <div class="rv-pop"><div class="meter"><i style="width: {{ o.reviews.pop or 0 }}%"></i></div><div class="val">популярность {{ o.reviews.pop or 0 }}/100</div></div>
-            <div style="margin-top:8px"><button class="btn outline" type="button">Оставить отзыв</button><button class="btn" type="button" data-reviews-toggle>Свернуть</button></div>
+            <div style="margin-top:8px"><button class="btn outline">Оставить отзыв</button><button class="btn" data-reviews-toggle>Свернуть</button></div>
           </div>
-          {% else %}<span class="chip">отзывы будут после первой выгрузки</span>{% endif %}
+          {% else %}
+            <span class="chip">отзывы будут после первой выгрузки</span>
+          {% endif %}
         </div>
       </div>
 
@@ -102,38 +130,47 @@
       <div class="chips">{% for ch in o.terms.chips %}<span class="chip">{{ ch }}</span>{% endfor %}</div>
       {% endif %}
 
+      <div class="summary">
+        {% if o.summary %}
+          {{ o.summary }}
+        {% else %}
+          {% set _sum = ( (o.amount.min|string) ~ ('–' ~ (o.amount.max|string)) if o.amount.min else (o.amount.max|string) ) ~ ' ₽' %}
+          {% set _term = ( (o.terms.days|string) ~ ' дней' ) if o.terms.days else 'бессрочный срок' %}
+          {% set _aud = o.audience or 'новые игроки' %}
+          {% set _where = o.where or 'ввод кода при регистрации/в ЛК' %}
+          {{ 'Предложение «' ~ (o.source) ~ '» ориентировано на ' ~ _aud ~
+             '. Доступна сумма фрибета ' ~ _sum ~ ', ' ~ _term ~
+             '. Активация: ' ~ _where ~ '. ' ~ (o.terms.chips|join(', ') if o.terms.chips else 'Без дополнительных требований') ~
+             '. Сравните условия с другими источниками ниже.' }}
+        {% endif %}
+      </div>
+
       <div class="links">
         {% if o.links.details %}<a class="link" href="{{ o.links.details }}">Страница условий</a>{% endif %}
-        {% if o.links.archive %}<a class="link" href="{{ o.links.archive }}">Архив прошедших кодов</a>{% endif %}
         {% if o.source_url %}<a class="link" href="{{ o.source_url }}">Источник</a>{% endif %}
       </div>
     </article>
     {% endfor %}
   </div>
 
-  <div id="tableActive" class="table-wrap">
+  <!-- Таблица -->
+  <div id="tableActive" class="table-wrap" style="display:none">
     <table class="table" id="offersTable">
-      <thead>
-        <tr>
-          <th>Источник</th><th>Коды</th><th>Сумма</th><th>Срок</th>
-          <th>Нюансы/Условия</th><th>Отзывы</th><th>Рейтинг GraBet</th><th>Обновлено</th>
-        </tr>
-      </thead>
+      <thead><tr>
+        <th>Источник</th><th>Коды</th><th>Сумма</th><th>Срок</th>
+        <th>Нюансы/Условия</th><th>Отзывы</th><th>Рейтинг GraBet</th><th>Обновлено</th>
+      </tr></thead>
       <tbody>
         {% for o in data.active_offers %}
         <tr data-date="{{ o.updated }}" data-max="{{ o.amount.max or 0 }}" data-avg="{{ o.reviews.avg or 0 }}" data-rating="{{ o.rating or 0 }}">
           <td>{{ o.source }}</td>
           <td>{% if o.codes|length %}{{ o.codes|join(', ') }}{% else %}—{% endif %}</td>
           <td>{% if o.amount.min %}{{ o.amount.min }}–{% endif %}{{ o.amount.max or '—' }} ₽</td>
-
-          <!-- СРОК в таблице -->
           <td>{% if o.terms.days %}{{ o.terms.days }} д.{% else %}Бессрочный{% endif %}</td>
-
           <td>
             {% if o.terms.coef_max %}≤ {{ o.terms.coef_max }}{% endif %}
             {% if o.terms.withdraw_min %}; вывод ≥ {{ o.terms.withdraw_min }} ₽{% endif %}
             {% if o.terms.chips %}; {{ o.terms.chips|join('; ') }}{% endif %}
-            {% if o.notes %}; {{ o.notes|join('; ') }}{% endif %}
           </td>
           <td>{% if o.reviews %}{{ '%.1f' % o.reviews.avg }}/5 ({{ o.reviews.total }}){% else %}—{% endif %}</td>
           <td class="rating-badge">{{ o.rating or 0 }}/100</td>
@@ -144,9 +181,9 @@
     </table>
   </div>
 
+  <!-- Истёкшие -->
   <div class="section-title">Истёкшие промокоды</div>
   <div class="section-hint">Не активны. Оставлены для истории. В режиме «Таблица» показаны ниже активных.</div>
-
   <div id="expiredCards">
     {% for o in data.expired_offers %}
     <article class="card expired" data-date="{{ o.updated }}">
@@ -166,14 +203,12 @@
     {% endfor %}
   </div>
 
-  <div id="tableExpired" class="table-wrap">
+  <div id="tableExpired" class="table-wrap" style="display:none">
     <table class="table" id="expiredTable">
-      <thead>
-        <tr>
-          <th>Источник</th><th>Коды</th><th>Сумма</th><th>Срок</th>
-          <th>Нюансы/Условия</th><th>Статус</th><th>Обновлено</th>
-        </tr>
-      </thead>
+      <thead><tr>
+        <th>Источник</th><th>Коды</th><th>Сумма</th><th>Срок</th>
+        <th>Нюансы/Условия</th><th>Статус</th><th>Обновлено</th>
+      </tr></thead>
       <tbody>
         {% for o in data.expired_offers %}
         <tr data-date="{{ o.updated }}">
@@ -196,24 +231,64 @@
 (function(){const k='grabet-theme',r=document.documentElement,b=document.getElementById('themeToggle');
 const s=localStorage.getItem(k); if(s==='light'||s==='dark'){r.setAttribute('data-theme',s);}
 b?.addEventListener('click',()=>{const n=r.getAttribute('data-theme')||'dark';const nx=n==='light'?'dark':'light';r.setAttribute('data-theme',nx);localStorage.setItem(k,nx);});})();
-document.addEventListener('click',e=>{const b=e.target.closest('[data-copy]');if(!b)return;const p=b.closest('.codepill');const c=p?.dataset.code?.trim();if(!c)return;navigator.clipboard.writeText(c).then(()=>{const t=b.textContent;b.textContent='Скопировано!';setTimeout(()=>b.textContent=t,1200);});});
-document.addEventListener('click',e=>{const t=e.target.closest('[data-reviews-toggle]');if(t){t.closest('.kv-reviews')?.classList.toggle('expanded');return;}
-const tile=e.target.closest('.kv-reviews');if(tile && !e.target.closest('button')) tile.classList.toggle('expanded');});
-(function(){const v=document.getElementById('view'),ca=document.getElementById('cardsActive'),ta=document.getElementById('tableActive'),te=document.getElementById('tableExpired');
-ta.style.display='none'; te.style.display='none';
-v?.addEventListener('click',e=>{const b=e.target.closest('button[data-view]');if(!b)return;
-v.querySelectorAll('button').forEach(x=>x.classList.remove('active'));b.classList.add('active');
-if(b.dataset.view==='table'){ta.style.display='block';te.style.display='block';ca.style.display='none';}else{ta.style.display='none';te.style.display='none';ca.style.display='block';}
-doSort();});})();
-const sortSel=document.getElementById('sort');sortSel?.addEventListener('change',doSort);
-function doSort(){const m=sortSel?.value||'grabet';
-const keyFn=(el)=>{const ts=Date.parse(el.getAttribute('data-date')||'')||0;const max=+(el.getAttribute('data-max')||0);const avg=+(el.getAttribute('data-avg')||0);let rating=+(el.getAttribute('data-rating')||0);
-if (el.querySelector('.kv b')?.textContent.trim()==='Срок' && /Бессрочный/.test(el.textContent)) rating=Math.max(0,rating-5);
-switch(m){case'date':return ts;case'amount':return max;case'reviews':return avg;default:return rating;}};
-const wrap=document.getElementById('cardsActive');if(wrap && wrap.style.display!=='none'){[...wrap.querySelectorAll('.card')].sort((a,b)=>keyFn(b)-keyFn(a)).forEach(n=>wrap.insertBefore(n,wrap.firstChild));}
-const tb=document.querySelector('#offersTable tbody');if(tb && document.getElementById('tableActive').style.display!=='none'){[...tb.querySelectorAll('tr')].sort((a,b)=>keyFn(b)-keyFn(a)).forEach(r=>tb.appendChild(r));}
-const exWrap=document.getElementById('expiredCards');if(exWrap){[...exWrap.querySelectorAll('card')].sort((a,b)=>(Date.parse(b.getAttribute('data-date')||'')||0)-(Date.parse(a.getAttribute('data-date')||'')||0));}
-const exBody=document.querySelector('#expiredTable tbody');if(exBody){[...exBody.querySelectorAll('tr')].sort((a,b)=>(Date.parse(b.getAttribute('data-date')||'')||0)-(Date.parse(a.getAttribute('data-date')||'')||0)).forEach(r=>exBody.appendChild(r));}}
+
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-copy]'); if(!b) return;
+  const p=b.closest('.codepill'); const c=p?.dataset.code?.trim(); if(!c) return;
+  navigator.clipboard.writeText(c).then(()=>{const t=b.textContent; b.textContent='Скопировано!'; setTimeout(()=>b.textContent=t,1200);});
+});
+
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-reviews-toggle]'); if(t){ t.closest('.kv-reviews')?.classList.toggle('expanded'); return; }
+  const tile=e.target.closest('.kv-reviews'); if(tile && !e.target.closest('button')) tile.classList.toggle('expanded');
+});
+
+(function(){
+  const v=document.getElementById('view'), ca=document.getElementById('cardsActive'),
+        ta=document.getElementById('tableActive'), te=document.getElementById('tableExpired');
+  v?.addEventListener('click',e=>{
+    const b=e.target.closest('button[data-view]'); if(!b) return;
+    v.querySelectorAll('button').forEach(x=>x.classList.remove('active')); b.classList.add('active');
+    const table=b.dataset.view==='table';
+    ta.style.display=table?'block':'none';
+    te.style.display=table?'block':'none';
+    ca.style.display=table?'none':'block';
+    doSort();
+  });
+})();
+
+const sortSel=document.getElementById('sort'); sortSel?.addEventListener('change',doSort);
+function doSort(){
+  const m=sortSel?.value||'grabet';
+  const keyFn=(el)=>{
+    const ts=Date.parse(el.getAttribute('data-date')||'')||0;
+    const max=+(el.getAttribute('data-max')||0);
+    const avg=+(el.getAttribute('data-avg')||0);
+    let rating=+(el.getAttribute('data-rating')||0);
+    if (/Бессрочный/.test(el.textContent)) rating=Math.max(0,rating-5);
+    switch(m){case'date':return ts; case'amount':return max; case'reviews':return avg; default:return rating;}
+  };
+  const wrap=document.getElementById('cardsActive');
+  if(wrap && wrap.style.display!=='none'){
+    [...wrap.querySelectorAll('.card')].sort((a,b)=>keyFn(b)-keyFn(a)).forEach(n=>wrap.insertBefore(n,wrap.firstChild));
+  }
+  const tb=document.querySelector('#offersTable tbody');
+  if(tb && document.getElementById('tableActive').style.display!=='none'){
+    [...tb.querySelectorAll('tr')].sort((a,b)=>keyFn(b)-keyFn(a)).forEach(r=>tb.appendChild(r));
+  }
+  const exWrap=document.getElementById('expiredCards');
+  if(exWrap){
+    [...exWrap.querySelectorAll('.card')]
+      .sort((a,b)=>(Date.parse(b.getAttribute('data-date')||'')||0)-(Date.parse(a.getAttribute('data-date')||'')||0))
+      .forEach(n=>exWrap.appendChild(n));
+  }
+  const exBody=document.querySelector('#expiredTable tbody');
+  if(exBody){
+    [...exBody.querySelectorAll('tr')]
+      .sort((a,b)=>(Date.parse(b.getAttribute('data-date')||'')||0)-(Date.parse(a.getAttribute('data-date')||'')||0))
+      .forEach(r=>exBody.appendChild(r));
+  }
+}
 doSort();
 </script>
 </body>
