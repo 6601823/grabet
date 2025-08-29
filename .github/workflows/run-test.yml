@@ -1,31 +1,31 @@
-name: run-test
-
+name: build-fonbet
 on:
-  workflow_dispatch: {}   # запуск вручную
+  workflow_dispatch: {}
   schedule:
-    - cron: "0 7 * * *"   # каждый день в 07:00 UTC
+    - cron: "0 7 * * *"
 
 jobs:
   run:
     runs-on: ubuntu-latest
     permissions:
-      contents: write   # <-- разрешаем пушить в репо
+      contents: write
     steps:
       - uses: actions/checkout@v4
-        with:
-          persist-credentials: true   # важно для git push
+        with: { persist-credentials: true }
       - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-      - name: Run script
+        with: { python-version: "3.11" }
+      - name: Install deps
         run: |
-          pip install requests beautifulsoup4
-          python scripts/parse_first.py
-      - name: Commit result
+          pip install jinja2
+      # здесь может быть шаг парсинга, который обновляет data/fonbet.json
+      - name: Build HTML from template
+        run: |
+          python scripts/build.py
+      - name: Commit site
         run: |
           git config user.name "github-actions"
           git config user.email "actions@users.noreply.github.com"
-          git add data/result.txt
-          git commit -m "update result.txt" || echo "No changes"
+          git add promo-fonbet.html data/fonbet.json
+          git commit -m "build: update promo-fonbet" || echo "No changes"
           git push
 
