@@ -1,49 +1,114 @@
-/* === WINLINE theme === */
+/* === WINLINE — минималистичный фирменный стиль === */
+
 :root{
-  --bg:#ffffff; --card:#f7f8fa; --text:#14161a; --muted:#6b7280;
-  --stroke:#d1d5db; --chip:#eef1f5;
-  --primary:#ff7a00; --primary-contrast:#111111;
-  --ok:#22c55e; --warn:#f59e0b; --bad:#ef4444;
+  --bg:#121212;         /* фон страницы */
+  --card:#1a1a1d;       /* фон карточки */
+  --codes:#222226;      /* фон блока codes */
+  --kv:#2a2a2e;         /* фон ячеек grid */
+  --text:#f4f5f7;
+  --muted:#9aa0ab;
+  --stroke:#37373b;
+
+  --primary:#ff7a00;    /* фирменный оранжевый Winline */
+  --ok:#22c55e; --warn:#f59e0b;
 }
-:root[data-theme="dark"]{
-  --bg:#121212; --card:#191b1f; --text:#f2f3f5; --muted:#a0a7b4;
-  --stroke:#272b32; --chip:#20242a;
-  --primary:#ff7a00; --primary-contrast:#111111;
-  --ok:#24d37c; --warn:#ffb74d; --bad:#ff5b5b;
+
+:root[data-theme="light"]{
+  --bg:#ffffff; --card:#f6f7fa; --codes:#eef1f6; --kv:#e9ecf3;
+  --text:#171a1f; --muted:#6b7280; --stroke:#d1d5db;
+  --primary:#ff7a00; --ok:#16a34a; --warn:#d97706;
 }
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme]){
-    --bg:#121212; --card:#191b1f; --text:#f2f3f5; --muted:#a0a7b4;
-    --stroke:#272b32; --chip:#20242a;
-    --primary:#ff7a00; --primary-contrast:#111111;
-    --ok:#24d37c; --warn:#ffb74d; --bad:#ff5b5b;
-  }
+
+html,body{
+  background:var(--bg); color:var(--text);
+  font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;
 }
-/* лёгкая «кожа» Winline, размеров не меняет */
+
+/* Карточка */
 .card{
-  background:
-    radial-gradient(120% 140% at 110% -40%, color-mix(in srgb, var(--primary) 12%, transparent) 0%, transparent 40%),
-    repeating-linear-gradient(135deg, color-mix(in srgb, #000 6%, transparent) 0 10px, transparent 10px 20px),
-    var(--card);
-  border-color: color-mix(in srgb, #000 10%, var(--stroke));
+  background:var(--card);
+  border:1px solid var(--stroke);
+  border-radius:14px;
+  padding:16px; margin-bottom:18px;
 }
+
+/* Шапка */
+.card__top{ display:flex; align-items:center; gap:10px; }
+.card__top .src{ font-weight:700; font-size:15px; }
+.badge{ background:var(--primary); color:#111; font-weight:800; letter-spacing:.2px; font-size:12px; padding:3px 8px; border-radius:6px; }
+.meta{ margin-left:auto; display:flex; gap:10px; align-items:center; color:var(--muted); font-size:12px; }
+.status.active{ background:#15371f; color:#8cf0ac; padding:2px 8px; border-radius:8px; }
+.status.exp{ background:#3a1f1f; color:#ffb3b3; padding:2px 8px; border-radius:8px; }
+
+/* Коды */
+.codes{
+  margin-top:10px; background:var(--codes); border:1px solid var(--stroke);
+  border-radius:10px; padding:10px; display:flex; flex-wrap:wrap; gap:10px;
+}
+.codepill{
+  background:#fff3e8; color:#b45309; border:1px solid #ffd1a8;
+  font-weight:800; font-size:14px; letter-spacing:.2px;
+  border-radius:8px; padding:6px 10px; display:flex; align-items:center; gap:8px;
+}
+.copy-btn{ font-size:12px; border:none; background:var(--primary); color:#111; font-weight:800; padding:4px 8px; border-radius:6px; }
+.copy-btn:hover{ filter:brightness(1.05); }
+
+/* GRID */
+.grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:12px; }
 .kv{
-  background:
-    linear-gradient(180deg, color-mix(in srgb, #fff 7%, transparent) 0%, color-mix(in srgb, #000 8%, transparent) 100%),
-    repeating-linear-gradient(135deg, color-mix(in srgb, #000 5%, transparent) 0 8px, transparent 8px 16px),
-    var(--chip);
-  border-color: color-mix(in srgb, #000 16%, var(--stroke));
+  background:var(--kv); border:1px solid var(--stroke);
+  border-radius:10px; padding:10px; font-size:14px; min-height:84px;
 }
-.btn.primary{
-  background: var(--primary); color: var(--primary-contrast);
-  border-color: color-mix(in srgb, #000 10%, var(--primary));
-  box-shadow: 0 0 0 1px color-mix(in srgb, #fff 16%, transparent) inset,
-              0 10px 22px color-mix(in srgb, var(--primary) 28%, transparent);
+.kv b{ display:block; font-size:13px; color:var(--muted); margin-bottom:4px; }
+
+/* Сумма — выделение */
+.kv-money .v-money{ font-size:20px; font-weight:900; color:#fff; line-height:1.15; }
+
+/* Бейджи — всегда ниже значения */
+.kv-badges{ display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+.nom{
+  font-size:12px; line-height:1.2; padding:2px 8px; border-radius:6px; font-weight:700;
+  color:#111; background:#ffedd5; border:1px solid #ffc896; white-space:nowrap;
 }
-.btn.primary:hover{ filter:brightness(1.05); }
-.copy-btn,.btn.outline{ background:transparent; border-color: color-mix(in srgb, #000 35%, var(--stroke)); }
-.copy-btn:hover,.btn.outline:hover{
-  background: color-mix(in srgb, var(--primary) 10%, transparent);
-  color: var(--primary-contrast); border-color: var(--primary);
+.nom--max{ background:#bbf7d0; border-color:#86efac; }
+.nom--min{ background:#fecaca; border-color:#fca5a5; }
+.nom--common{ background:#e5e7eb; border-color:#cbd5e1; color:#1f2937; }
+.nom--best{ background:#ddd6fe; border-color:#c4b5fd; }
+.nom--short{ background:#fde68a; border-color:#fcd34d; }
+.nom--long{ background:#bae6fd; border-color:#7dd3fc; }
+
+/* Чипсы */
+.chips{ margin-top:10px; display:flex; gap:8px; flex-wrap:wrap; }
+.chip{ background:#33343a; border:1px solid var(--stroke); color:var(--text); padding:6px 10px; border-radius:999px; font-size:13px; }
+
+/* Отзывы (компактно) */
+.kv-reviews .rv-mini{ display:flex; gap:8px; align-items:center; }
+.rv-stars span{ font-size:14px; }
+.rv-stars .on{ color:#ffd34d; } .rv-stars .off{ color:#575757; }
+.rv-hint{ color:var(--muted); font-size:12px; }
+.rv-score{ font-weight:800; }
+.kv-reviews .rv-detail{ margin-top:8px; display:none; }
+.kv-reviews.expanded .rv-detail{ display:block; }
+.rv-row{ display:grid; grid-template-columns:68px 1fr 42px; gap:8px; align-items:center; margin:2px 0; }
+.rv-bar{ height:6px; background:#4a4f59; border-radius:999px; overflow:hidden; }
+.rv-bar i{ display:block; height:100%; background:linear-gradient(90deg,#ff7a00,#ffd34d); }
+.rv-pop{ display:flex; gap:10px; align-items:center; margin-top:6px; }
+.meter{ width:160px; height:8px; background:#4a4f59; border-radius:999px; overflow:hidden; }
+.meter i{ display:block; height:100%; background:linear-gradient(90deg,#22c55e,#ff7a00); }
+
+/* Выводы */
+.summary{
+  margin-top:12px; background:#202126; border:1px solid var(--stroke);
+  border-radius:10px; padding:12px; font-size:14px; line-height:1.45;
 }
-.codepill{ border-color: var(--primary); background: color-mix(in srgb, var(--primary) 9%, transparent); }
+
+/* Ссылки */
+.links{ margin-top:10px; display:flex; gap:14px; flex-wrap:wrap; }
+.link{ color:#86b7ff; text-decoration:underline; }
+
+/* Табличные акценты */
+.rating-badge{ font-weight:800; }
+
+/* Адаптив */
+@media (max-width:980px){ .grid{ grid-template-columns:repeat(2,1fr);} }
+@media (max-width:560px){ .grid{ grid-template-columns:1fr;} }
