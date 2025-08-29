@@ -1,31 +1,31 @@
-/* === Fonbet theme === */
-/* Светлая (основная для Fonbet, белый фон + красный акцент) */
+/* === FONBET THEME (только стили бренда) === */
+/* Светлая (основная у Fonbet: бело-серая с красным акцентом) */
 :root{
-  --bg:#ffffff; 
+  --bg:#ffffff;
   --card:#f7f7f7;
-  --text:#111111; 
+  --text:#111111;
   --muted:#666666;
-  --stroke:#dddddd; 
+  --stroke:#dddddd;
   --chip:#f1f1f1;
 
-  --primary:#e50029;           /* фирменный красный */
+  --primary:#e50029;           /* фирменный красный Fonbet */
   --primary-contrast:#ffffff;
 
-  --ok:#2ecc71; 
-  --warn:#f39c12; 
+  --ok:#2ecc71;
+  --warn:#f39c12;
   --bad:#e74c3c;
 }
 
-/* Тёмная версия (ручной тумблер или системная dark) */
+/* Тёмная версия — чёрно-серая с ярко-красным акцентом */
 :root[data-theme="dark"]{
   --bg:#0f0f0f;
   --card:#181818;
-  --text:#eaeaea; 
+  --text:#eaeaea;
   --muted:#999999;
-  --stroke:#2a2a2a; 
+  --stroke:#2a2a2a;
   --chip:#222222;
 
-  --primary:#ff3344;           /* яркий красный на тёмном фоне */
+  --primary:#ff3344;
   --primary-contrast:#ffffff;
 
   --ok:#27d17a;
@@ -33,21 +33,124 @@
   --bad:#ff6b6b;
 }
 
-/* fallback: если системная светлая и нет ручного выбора */
+/* Если пользователь не выбирал вручную — уважаем системную тёмную */
 @media (prefers-color-scheme: dark){
   :root:not([data-theme]){
-    --bg:#0f0f0f;
-    --card:#181818;
-    --text:#eaeaea; 
-    --muted:#999999;
-    --stroke:#2a2a2a; 
-    --chip:#222222;
-
-    --primary:#ff3344;
-    --primary-contrast:#ffffff;
-
-    --ok:#27d17a;
-    --warn:#ffb84d;
-    --bad:#ff6b6b;
+    --bg:#0f0f0f; --card:#181818; --text:#eaeaea; --muted:#999999;
+    --stroke:#2a2a2a; --chip:#222222;
+    --primary:#ff3344; --primary-contrast:#ffffff;
+    --ok:#27d17a; --warn:#ffb84d; --bad:#ff6b6b;
   }
 }
+
+/* ====== ДАЛЕЕ — «кожа» Fonbet для наших компонентов ====== */
+/* НИЧЕГО не меняет в размерах/сетке — только фон/бордеры/кнопки */
+
+/* Большая карточка (фон контейнера в духе fon.bet) */
+.card{
+  /* лёгкий красный «ореол» + мягкие диагонали, без изображений */
+  background:
+    /* лёгкий красный градиент слева-сверху */
+    radial-gradient(120% 140% at -10% -30%, color-mix(in srgb, var(--primary) 12%, transparent) 0%, transparent 40%),
+    /* едва заметные диагонали */
+    repeating-linear-gradient(
+      135deg,
+      color-mix(in srgb, #000 6%, transparent) 0 10px,
+      transparent 10px 20px
+    ),
+    var(--card);
+  border-color: color-mix(in srgb, #000 14%, var(--stroke));
+  box-shadow:
+    0 1px 0 color-mix(in srgb, #000 20%, transparent),
+    0 10px 24px color-mix(in srgb, #000 40%, transparent);
+}
+
+/* Внутренние плитки (Сумма/Для кого/Срок/Отзывы) — «панели» как на fon.bet */
+.kv{
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb, #fff 6%, transparent) 0%,
+      color-mix(in srgb, #000 8%, transparent) 100%
+    ),
+    /* тонкие диагонали внутри панели */
+    repeating-linear-gradient(
+      135deg,
+      color-mix(in srgb, #000 7%, transparent) 0 8px,
+      transparent 8px 16px
+    ),
+    var(--chip);
+  border-color: color-mix(in srgb, #000 18%, var(--stroke));
+}
+
+/* Тёмная тема — чуть усиленные контрасты полос для читаемости */
+:root[data-theme="dark"] .kv{
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb, #fff 5%, transparent) 0%,
+      color-mix(in srgb, #000 14%, transparent) 100%
+    ),
+    repeating-linear-gradient(
+      135deg,
+      color-mix(in srgb, #fff 4%, transparent) 0 8px,
+      transparent 8px 16px
+    ),
+    var(--chip);
+  border-color: color-mix(in srgb, #000 35%, var(--stroke));
+}
+
+/* Панель-тулбар тоже слегка «фонбетная» */
+.toolbar{
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--primary) 6%, transparent) 0%,
+      transparent 60%
+    ),
+    var(--card);
+  border-color: color-mix(in srgb, #000 12%, var(--stroke));
+}
+
+/* Кнопки внутри карточек — как на fon.bet */
+.btn.primary{
+  background: var(--primary);
+  color: var(--primary-contrast);
+  border-color: color-mix(in srgb, #000 10%, var(--primary));
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, #fff 18%, transparent) inset,
+    0 10px 22px color-mix(in srgb, var(--primary) 30%, transparent);
+}
+.btn.primary:hover{
+  filter: brightness(1.05);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, #fff 24%, transparent) inset,
+    0 12px 26px color-mix(in srgb, var(--primary) 40%, transparent);
+}
+
+/* «Прозрачные»/обводочные — белый контур на тёмном, тёмный на светлом */
+.btn.outline, .copy-btn{
+  background: transparent;
+  border-color: color-mix(in srgb, #fff 55%, var(--stroke));
+}
+:root[data-theme="light"] .btn.outline, 
+:root[data-theme="light"] .copy-btn{
+  border-color: color-mix(in srgb, #000 35%, var(--stroke));
+}
+.btn.outline:hover, .copy-btn:hover{
+  background: color-mix(in srgb, var(--primary) 12%, transparent);
+  color: var(--primary-contrast);
+  border-color: var(--primary);
+}
+
+/* Код-пилюля — красная пунктирная, как у промоблоков */
+.codepill{
+  border-color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 10%, transparent);
+}
+
+/* Бейджи-пилюли: делаем их чуть «стеклянными» */
+.badge{
+  background: color-mix(in srgb, #fff 10%, var(--chip));
+  border-color: color-mix(in srgb, #000 20%, var(--stroke));
+}
+
+/* Мелкий штрих — «чёрточка» в списке ссылок */
+.link{ border-bottom:1px dashed color-mix(in srgb, var(--primary) 60%, transparent); }
