@@ -8,148 +8,279 @@
 </head>
 <body>
 <div class="wrap">
+
   <h1>Промокоды Фонбет — сравнение</h1>
   <div class="hint">Обновлено: {{ data.updated_at }}. Активные сверху, ниже — истёкшие.</div>
 
-  {# ===== ACTIVE ===== #}
-  {% for o in data.active_offers %}
-  <article class="card" aria-label="{{ o.source }}">
-    <div class="card__top">
-      <div class="src">{{ o.source }}</div>
-      <span class="badge">{{ o.tag }}</span>
-      <div class="meta">
-        <span class="updated">обновлено: {{ o.updated }}</span>
-        <span class="status {{ 'active' if o.status=='active' else 'event' }}">{{ 'активно' if o.status=='active' else 'событийные' }}</span>
+  <!-- ===== Панель управления ===== -->
+  <div class="toolbar" id="toolbar">
+    <div class="group">
+      <label class="small" for="sort">Сортировать по:</label>
+      <select id="sort">
+        <option value="grabet" selected>По рейтингу GraBet</option>
+        <option value="date">Дате публикации промокода</option>
+        <option value="amount">По сумме бонуса</option>
+        <option value="reviews">По отзывам</option>
+      </select>
+    </div>
+
+    <div class="group">
+      <label class="small">Отображать в виде:</label>
+      <div class="seg" id="view">
+        <button type="button" data-view="cards" class="active">Карточки</button>
+        <button type="button" data-view="table">Большая таблица</button>
       </div>
     </div>
 
-    <div class="codes">
-      {% for c in o.codes %}
-      <div class="codepill" data-code="{{ c }}"><span>{{ c }}</span><button class="copy-btn" data-copy>Копировать</button></div>
-      {% endfor %}
-    </div>
+    <button class="theme-btn" id="themeToggle">Тёмная/Светлая тема</button>
+  </div>
 
-    {% if o.badges_line and o.badges_line|length %}
-    <div class="nomline">
-      {% for b in o.badges_line %}
-        <span class="nom nom--{{ b }}">
-          {% if b=='min' %}самый маленький встречается{% elif b=='max' %}самый большой{% elif b=='common' %}как у большинства{% elif b=='event' %}событийная акция{% else %}{{ b }}{% endif %}
-        </span>
-      {% endfor %}
-    </div>
-    {% endif %}
-
-    <div class="grid">
-      <div class="kv"><b>Сумма</b>
-        {% if o.amount.min %}{{ o.amount.min }}–{% endif %}{{ o.amount.max }} ₽
-        {% for b in o.amount.label_badges %}
-          <span class="nom nom--{{ b }}">{% if b=='max' %}самый большой{% elif b=='common' %}как у большинства{% else %}{{ b }}{% endif %}</span>
-        {% endfor %}
-      </div>
-      <div class="kv"><b>Для кого</b> {{ o.audience }}</div>
-      <div class="kv"><b>Срок</b> {{ o.terms.days or '—' }} дней <span class="nom nom--std">как у всех</span></div>
-      <div class="kv"><b>Ставка</b> ординар ≤ {{ o.terms.coef_max or '—' }} <span class="nom nom--std">как у всех</span></div>
-    </div>
-
-    {% if o.terms.chips and o.terms.chips|length %}
-    <div class="chips">
-      {% for ch in o.terms.chips %}<span class="chip">{{ ch }}</span>{% endfor %}
-    </div>
-    {% endif %}
-
-    {# отзывы: компактный блок #}
-    {% if o.reviews %}
-    <div class="reviews compact" aria-label="Отзывы">
-      <div class="rev-head">
-        <div class="stars">
-          {% set full = o.reviews.avg|round(0,'floor')|int %}
-          {% set half = 1 if (o.reviews.avg - full) >= 0.5 and full<5 else 0 %}
-          {% for i in range(0, full) %}<span class="star star--on">★</span>{% endfor %}
-          {% if half %}<span class="star star--on" style="clip-path: inset(0 40% 0 0)">★</span>{% endif %}
-          {% for i in range(0, 5-full-half) %}<span class="star star--off">★</span>{% endfor %}
+  <!-- ====== Вид 1: Карточки ====== -->
+  <div id="cardsView">
+    {% for o in data.active_offers %}
+    <article class="card" aria-label="{{ o.source }}"
+      data-date="{{ o.updated }}"
+      data-max="{{ o.amount.max or 0 }}"
+      data-avg="{{ o.reviews.avg or 0 }}"
+      data-rating="{{ o.rating or 0 }}">
+      <div class="card__top">
+        <div class="src">{{ o.source }}</div>
+        <span class="badge">{{ o.tag }}</span>
+        <div class="meta">
+          <span class="updated">обновлено: {{ o.updated }}</span>
+          <span class="status active">активно</span>
         </div>
-        <div class="score">{{ '%.1f' % o.reviews.avg }} / 5</div>
       </div>
 
-      <div class="subhint">На основе {{ o.reviews.total }} оценок</div>
-
-      {% set total = o.reviews.total|float if o.reviews.total else 1 %}
-      <div class="dist">
-        {% for k in ['5','4','3','2','1'] %}
-          {% set cnt = o.reviews.dist[k] if o.reviews.dist and k in o.reviews.dist else 0 %}
-          <div class="dist-row">
-            <div class="label">{{ k }} звёзд</div>
-            <div class="bar"><i style="width: {{ (cnt/total*100)|round(1) }}%"></i></div>
-            <div class="count">{{ cnt }}</div>
-          </div>
+      <div class="codes">
+        {% for c in o.codes %}
+        <div class="codepill" data-code="{{ c }}"><span>{{ c }}</span><button class="copy-btn" data-copy>Копировать</button></div>
         {% endfor %}
       </div>
 
-      <div class="pop">
-        <div class="meter"><i style="width: {{ o.reviews.pop or 0 }}%"></i></div>
-        <div class="val">популярность {{ o.reviews.pop or 0 }}/100</div>
+      {% if o.badges_line and o.badges_line|length %}
+      <div class="nomline">
+        {% for b in o.badges_line %}
+        <span class="nom nom--{{ b }}">
+          {% if b=='min' %}самый маленький встречается
+          {% elif b=='max' %}самый большой
+          {% elif b=='common' %}как у большинства
+          {% elif b=='event' %}событийная акция
+          {% else %}{{ b }}{% endif %}
+        </span>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <div class="grid">
+        <div class="kv"><b>Сумма</b>
+          {% if o.amount.min %}{{ o.amount.min }}–{% endif %}{{ o.amount.max }} ₽
+          {% for b in o.amount.label_badges %}
+          <span class="nom nom--{{ b }}">{% if b=='max' %}самый большой{% elif b=='common' %}как у большинства{% else %}{{ b }}{% endif %}</span>
+          {% endfor %}
+        </div>
+        <div class="kv"><b>Для кого</b> {{ o.audience }}</div>
+        <div class="kv"><b>Срок</b> {{ o.terms.days or '—' }} дней <span class="nom nom--std">как у всех</span></div>
+
+        <!-- Плитка "Отзывы" вместо "Ставка" -->
+        <div class="kv kv-reviews" data-reviews>
+          <b>Отзывы о промокоде</b>
+          <div class="rv-mini">
+            <div class="rv-stars" aria-hidden="true">
+              {% set full = o.reviews.avg|round(0,'floor')|int %}
+              {% set half = 1 if (o.reviews.avg - full) >= 0.5 and full<5 else 0 %}
+              {% for i in range(0, full) %}<span class="on">★</span>{% endfor %}
+              {% if half %}<span class="on" style="clip-path: inset(0 40% 0 0)">★</span>{% endif %}
+              {% for i in range(0, 5-full-half) %}<span class="off">★</span>{% endfor %}
+            </div>
+            <div class="rv-hint">на основе {{ o.reviews.total }} оценок</div>
+            <div class="rv-score">{{ '%.1f' % o.reviews.avg }} / 5</div>
+          </div>
+
+          <div class="rv-detail">
+            {% set total = o.reviews.total|float if o.reviews.total else 1 %}
+            {% for k in ['5','4','3','2','1'] %}
+              {% set cnt = o.reviews.dist[k] if o.reviews.dist and k in o.reviews.dist else 0 %}
+              <div class="rv-row">
+                <div class="label">{{ k }} звёзд</div>
+                <div class="rv-bar"><i style="width: {{ (cnt/total*100)|round(1) }}%"></i></div>
+                <div class="rv-count">{{ cnt }}</div>
+              </div>
+            {% endfor %}
+            <div class="rv-pop">
+              <div class="meter"><i style="width: {{ o.reviews.pop or 0 }}%"></i></div>
+              <div class="val">популярность {{ o.reviews.pop or 0 }}/100</div>
+            </div>
+            <div style="margin-top:8px">
+              <button class="btn outline" type="button">Оставить отзыв</button>
+              <button class="btn" type="button" data-reviews-toggle>Свернуть</button>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div class="reviews-toggle">
-        <button type="button" data-reviews-toggle>Показать отзывы полностью</button>
+      {% if o.terms.chips and o.terms.chips|length %}
+      <div class="chips">
+        {% for ch in o.terms.chips %}<span class="chip">{{ ch }}</span>{% endfor %}
       </div>
-    </div>
-    {% endif %}
+      {% endif %}
 
-    <div class="links">
-      {% if o.links.details %}<a class="link" href="{{ o.links.details }}">Страница условий</a>{% endif %}
-      {% if o.links.archive %}<a class="link" href="{{ o.links.archive }}">Архив прошедших кодов</a>{% endif %}
-    </div>
-  </article>
-  {% endfor %}
+      <div class="links">
+        {% if o.links.details %}<a class="link" href="{{ o.links.details }}">Страница условий</a>{% endif %}
+        {% if o.links.archive %}<a class="link" href="{{ o.links.archive }}">Архив прошедших кодов</a>{% endif %}
+      </div>
+    </article>
+    {% endfor %}
 
-  <div class="section-title">Истёкшие промокоды</div>
-  <div class="section-hint">Не активны. Оставлены для истории.</div>
+    <div class="section-title">Истёкшие промокоды</div>
+    <div class="section-hint">Не активны. Оставлены для истории.</div>
 
-  {# ===== EXPIRED ===== #}
-  {% for o in data.expired_offers %}
-  <article class="card expired">
-    <div class="card__top">
-      <div class="src">{{ o.source }}</div>
-      <span class="badge">{{ o.tag }}</span>
-      <div class="meta"><span class="updated">{{ o.updated }}</span><span class="status exp">неактивно</span></div>
-    </div>
+    {% for o in data.expired_offers %}
+    <article class="card expired">
+      <div class="card__top">
+        <div class="src">{{ o.source }}</div>
+        <span class="badge">{{ o.tag }}</span>
+        <div class="meta"><span class="updated">{{ o.updated }}</span><span class="status exp">неактивно</span></div>
+      </div>
+      <div class="codes">{% for c in o.codes %}<div class="codepill"><span>{{ c }}</span></div>{% endfor %}</div>
+      <div class="grid">
+        <div class="kv"><b>Сумма</b> {% if o.amount.min %}{{ o.amount.min }}–{% endif %}{{ o.amount.max }} ₽</div>
+        <div class="kv"><b>Срок</b> {{ o.terms.days or '—' }} дней</div>
+        <div class="kv"><b>Ставка</b> ординар ≤ {{ o.terms.coef_max or '—' }}</div>
+        <div class="kv"><b>Тип</b> {{ o.tag }}</div>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
 
-    <div class="codes">
-      {% for c in o.codes %}<div class="codepill"><span>{{ c }}</span></div>{% endfor %}
-    </div>
+  <!-- ====== Вид 2: Большая таблица ====== -->
+  <div id="tableView" class="table-wrap">
+    <table class="table" id="offersTable">
+      <thead>
+        <tr>
+          <th>Источник</th>
+          <th>Промокод(ы)</th>
+          <th>Сумма</th>
+          <th>Срок</th>
+          <th>Условия</th>
+          <th>Отзывы</th>
+          <th>Рейтинг GraBet</th>
+          <th>Обновлено</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for o in data.active_offers %}
+        <tr data-date="{{ o.updated }}" data-max="{{ o.amount.max or 0 }}" data-avg="{{ o.reviews.avg or 0 }}" data-rating="{{ o.rating or 0 }}">
+          <td>{{ o.source }}</td>
+          <td>{{ o.codes|join(', ') }}</td>
+          <td>{% if o.amount.min %}{{ o.amount.min }}–{% endif %}{{ o.amount.max }} ₽</td>
+          <td>{{ o.terms.days or '—' }} дней</td>
+          <td>≤ {{ o.terms.coef_max or '—' }}{% if o.terms.withdraw_min %}, вывод после пополнения ≥ {{ o.terms.withdraw_min }} ₽{% endif %}</td>
+          <td>{{ '%.1f' % o.reviews.avg }}/5 ({{ o.reviews.total }})</td>
+          <td class="rating-badge">{{ o.rating or 0 }}/100</td>
+          <td>{{ o.updated }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 
-    <div class="grid">
-      <div class="kv"><b>Сумма</b> {% if o.amount.min %}{{ o.amount.min }}–{% endif %}{{ o.amount.max }} ₽</div>
-      <div class="kv"><b>Срок</b> {{ o.terms.days or '—' }} дней</div>
-      <div class="kv"><b>Ставка</b> ординар ≤ {{ o.terms.coef_max or '—' }}</div>
-      <div class="kv"><b>Тип</b> {{ o.tag }}</div>
-    </div>
-  </article>
-  {% endfor %}
 </div>
 
 <script>
-  // копирование кода
-  document.addEventListener('click', e=>{
-    const btn = e.target.closest('[data-copy]');
-    if(!btn) return;
-    const pill = btn.closest('.codepill');
-    const code = pill?.dataset.code?.trim();
-    if(!code) return;
-    navigator.clipboard.writeText(code).then(()=>{
-      const old = btn.textContent; btn.textContent='Скопировано!'; setTimeout(()=>btn.textContent=old,1200);
-    });
+/* === ТЕМА: ручное переключение + сохранение === */
+(function(){
+  const key='grabet-theme';
+  const root=document.documentElement;
+  const btn=document.getElementById('themeToggle');
+  // применить сохранённую
+  const saved=localStorage.getItem(key);
+  if(saved==='light' || saved==='dark'){ root.setAttribute('data-theme', saved); }
+  btn?.addEventListener('click',()=>{
+    const now=root.getAttribute('data-theme')||'';
+    const next= now==='light' ? 'dark' : 'light';
+    root.setAttribute('data-theme', next);
+    localStorage.setItem(key, next);
   });
+})();
 
-  // разворачивание/сворачивание отзывов
-  document.addEventListener('click', e=>{
-    const t = e.target.closest('[data-reviews-toggle]');
-    if(!t) return;
-    const box = t.closest('.reviews');
-    box.classList.toggle('compact');
-    t.textContent = box.classList.contains('compact') ? 'Показать отзывы полностью' : 'Свернуть отзывы';
+/* === КОПИРОВАНИЕ КОДА === */
+document.addEventListener('click', e=>{
+  const btn=e.target.closest('[data-copy]');
+  if(!btn) return;
+  const pill=btn.closest('.codepill');
+  const code=pill?.dataset.code?.trim();
+  if(!code) return;
+  navigator.clipboard.writeText(code).then(()=>{
+    const old=btn.textContent; btn.textContent='Скопировано!'; setTimeout(()=>btn.textContent=old,1200);
   });
+});
+
+/* === ОТЗЫВЫ: разворот плитки === */
+document.addEventListener('click', e=>{
+  const toggle=e.target.closest('[data-reviews-toggle]');
+  if(toggle){
+    const box=toggle.closest('.kv-reviews'); box?.classList.toggle('expanded'); return;
+  }
+  const tile=e.target.closest('.kv-reviews');
+  if(tile && !e.target.closest('button')){ tile.classList.toggle('expanded'); }
+});
+
+/* === СМЕНА ВИДА (карточки/таблица) === */
+(function(){
+  const view=document.getElementById('view');
+  const cards=document.getElementById('cardsView');
+  const table=document.getElementById('tableView');
+  if(!view) return;
+  view.addEventListener('click', (e)=>{
+    const b=e.target.closest('button[data-view]'); if(!b) return;
+    view.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    const v=b.dataset.view;
+    if(v==='table'){ table.style.display='block'; cards.style.display='none'; }
+    else { table.style.display='none'; cards.style.display='block'; }
+    // пересортируем активный вид под текущий селект
+    doSort();
+  });
+})();
+
+/* === СОРТИРОВКА === */
+const sortSel=document.getElementById('sort');
+sortSel?.addEventListener('change', doSort);
+function doSort(){
+  const mode=sortSel?.value || 'grabet';
+  const cardsWrap=document.getElementById('cardsView');
+  const tableWrap=document.getElementById('tableView');
+  const tableBody=document.querySelector('#offersTable tbody');
+
+  // функция ключа сортировки
+  const keyFn = (el)=>{
+    const dateStr=el.getAttribute('data-date')||'';
+    const max=+(el.getAttribute('data-max')||0);
+    const avg=+(el.getAttribute('data-avg')||0);
+    const rating=+(el.getAttribute('data-rating')||0);
+    const ts = Date.parse(dateStr) || 0;
+    switch(mode){
+      case 'date':   return ts;        // новее — выше
+      case 'amount': return max;       // больше — выше
+      case 'reviews':return avg;       // выше средняя — выше
+      default:       return rating;    // рейтинг GraBet
+    }
+  };
+
+  // если активен вид "карточки"
+  if(cardsWrap && cardsWrap.style.display !== 'none'){
+    const nodes=[...cardsWrap.querySelectorAll('.card:not(.expired)')];
+    nodes.sort((a,b)=> keyFn(b)-keyFn(a)).forEach(n=>cardsWrap.insertBefore(n, cardsWrap.firstChild));
+  }
+  // если активен вид "таблица"
+  if(tableBody && document.getElementById('tableView').style.display!=='none'){
+    const rows=[...tableBody.querySelectorAll('tr')];
+    rows.sort((a,b)=> keyFn(b)-keyFn(a)).forEach(r=>tableBody.appendChild(r));
+  }
+}
+// первичная сортировка по рейтингу
+doSort();
 </script>
 </body>
 </html>
