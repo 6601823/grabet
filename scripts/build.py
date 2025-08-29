@@ -14,10 +14,8 @@ def main():
         autoescape=select_autoescape(["html","xml"])
     )
     tpl = env.get_template("promo-fonbet.html.j2")
-    html = tpl.render(data=data)
-    OUT.write_text(html, encoding="utf-8")
+    OUT.write_text(tpl.render(data=data), encoding="utf-8")
     print(f"Rendered: {OUT}")
 
 if __name__ == "__main__":
     main()
-
