@@ -28,4 +28,26 @@ jobs:
           git add promo-fonbet.html data/fonbet.json
           git commit -m "build: update promo-fonbet" || echo "No changes"
           git push
+      - name: Build Winline page
+      
+        run: |
+          python - <<'PY'
+          import json, pathlib
+          from jinja2 import Environment, FileSystemLoader, select_autoescape
+          root = pathlib.Path('.').resolve()
+          data = json.loads((root/'data'/'winline.json').read_text(encoding='utf-8'))
+          env = Environment(loader=FileSystemLoader(str(root/'templates')),
+                            autoescape=select_autoescape(['html','xml']))
+          html = env.get_template('promo-winline.html.j2').render(data=data)
+          (root/'promo-winline.html').write_text(html, encoding='utf-8')
+          print('Rendered promo-winline.html')
+          PY
+
+      - name: Commit Winline page
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@users.noreply.github.com"
+          git add promo-winline.html
+          git commit -m "Build Winline promo page" || echo "No changes"
+          git push
 
