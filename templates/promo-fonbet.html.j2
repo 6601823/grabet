@@ -37,10 +37,7 @@
   <div id="cardsActive">
     {% if data.active_offers|length == 0 %}
       <article class="card">
-        <div class="card__top">
-          <div class="src">Данные уточняются</div>
-          <span class="badge">ожидаем парсинг</span>
-        </div>
+        <div class="card__top"><div class="src">Данные уточняются</div><span class="badge">ожидаем парсинг</span></div>
       </article>
     {% endif %}
 
@@ -50,6 +47,7 @@
       data-max="{{ o.amount.max or 0 }}"
       data-avg="{{ o.reviews.avg or 0 }}"
       data-rating="{{ o.rating or 0 }}">
+
       <div class="card__top">
         <div class="src">{{ o.source }}</div>
         <span class="badge">{{ o.tag }}</span>
@@ -59,6 +57,7 @@
         </div>
       </div>
 
+      <!-- Коды -->
       <div class="codes">
         {% for c in o.codes %}
           <div class="codepill" data-code="{{ c }}"><span>{{ c }}</span><button class="copy-btn" data-copy>Копировать</button></div>
@@ -66,36 +65,56 @@
         {% if o.codes|length == 0 %}<span class="chip">код вводится по ссылке/в ЛК</span>{% endif %}
       </div>
 
-      {% if o.badges_line and o.badges_line|length %}
-      <div class="nomline">
-        {% for b in o.badges_line %}
-          <span class="nom nom--{{ b }}">
-            {% if b=='min' %}самый маленький встречается
-            {% elif b=='max' %}самый большой
-            {% elif b=='common' %}как у большинства
-            {% elif b=='event' %}событийная акция
-            {% else %}{{ b }}{% endif %}
-          </span>
-        {% endfor %}
-      </div>
-      {% endif %}
-
+      <!-- Инфосетка -->
       <div class="grid">
-        <div class="kv"><b>Сумма</b>
-          {% if o.amount.min %}{{ o.amount.min }}–{% endif %}{{ o.amount.max or '—' }} ₽
-        </div>
-        <div class="kv"><b>Для кого</b> {{ o.audience or '—' }}</div>
-
-        <!-- СРОК: с правкой на Бессрочный -->
-        <div class="kv"><b>Срок</b>
-          {% if o.terms.days %}
-            {{ o.terms.days }} дней
-          {% else %}
-            Бессрочный
+        <!-- Сумма -->
+        <div class="kv kv-money">
+          <b>Сумма</b>
+          <div class="v-money">
+            {% if o.amount.min %}{{ o.amount.min }}–{% endif %}{{ o.amount.max or '—' }} ₽
+          </div>
+          {% if o.amount.label_badges and o.amount.label_badges|length %}
+          <div class="kv-badges">
+            {% for b in o.amount.label_badges %}
+              <span class="nom nom--{{ b }}">
+                {% if b=='min' %}самый маленький{% elif b=='max' %}самый большой{% elif b=='common' %}как у большинства{% else %}{{ b }}{% endif %}
+              </span>
+            {% endfor %}
+          </div>
           {% endif %}
         </div>
 
-        <!-- Отзывы-плитка (мини + разворот) -->
+        <!-- Для кого -->
+        <div class="kv">
+          <b>Для кого</b>
+          <div class="v">{{ o.audience or '—' }}</div>
+          {% if o.audience_badges and o.audience_badges|length %}
+          <div class="kv-badges">
+            {% for b in o.audience_badges %}
+              <span class="nom nom--{{ b }}">{{ b }}</span>
+            {% endfor %}
+          </div>
+          {% endif %}
+        </div>
+
+        <!-- Срок -->
+        <div class="kv">
+          <b>Срок</b>
+          <div class="v">
+            {% if o.terms.days %}{{ o.terms.days }} дней{% else %}Бессрочный{% endif %}
+          </div>
+          {% if o.term_badges and o.term_badges|length %}
+          <div class="kv-badges">
+            {% for b in o.term_badges %}
+              <span class="nom nom--{{ b }}">
+                {% if b=='best' %}лучшее предложение{% elif b=='common' %}как у всех{% elif b=='short' %}короткий срок{% elif b=='long' %}долгий срок{% else %}{{ b }}{% endif %}
+              </span>
+            {% endfor %}
+          </div>
+          {% endif %}
+        </div>
+
+        <!-- Отзывы: компактная плитка (оценки внутри, без «номинаций») -->
         <div class="kv kv-reviews" data-reviews>
           <b>Отзывы о промокоде</b>
           {% if o.reviews %}
@@ -114,20 +133,10 @@
             {% set total = o.reviews.total|float if o.reviews.total else 1 %}
             {% for k in ['5','4','3','2','1'] %}
               {% set cnt = o.reviews.dist[k] if o.reviews.dist and k in o.reviews.dist else 0 %}
-              <div class="rv-row">
-                <div class="label">{{ k }} звёзд</div>
-                <div class="rv-bar"><i style="width: {{ (cnt/total*100)|round(1) }}%"></i></div>
-                <div class="rv-count">{{ cnt }}</div>
-              </div>
+              <div class="rv-row"><div class="label">{{ k }} звёзд</div><div class="rv-bar"><i style="width: {{ (cnt/total*100)|round(1) }}%"></i></div><div class="rv-count">{{ cnt }}</div></div>
             {% endfor %}
-            <div class="rv-pop">
-              <div class="meter"><i style="width: {{ o.reviews.pop or 0 }}%"></i></div>
-              <div class="val">популярность {{ o.reviews.pop or 0 }}/100</div>
-            </div>
-            <div style="margin-top:8px">
-              <button class="btn outline" type="button">Оставить отзыв</button>
-              <button class="btn" type="button" data-reviews-toggle>Свернуть</button>
-            </div>
+            <div class="rv-pop"><div class="meter"><i style="width: {{ o.reviews.pop or 0 }}%"></i></div><div class="val">популярность {{ o.reviews.pop or 0 }}/100</div></div>
+            <div style="margin-top:8px"><button class="btn outline" type="button">Оставить отзыв</button><button class="btn" type="button" data-reviews-toggle>Свернуть</button></div>
           </div>
           {% else %}
             <span class="chip">отзывы будут после первой выгрузки</span>
@@ -135,12 +144,30 @@
         </div>
       </div>
 
+      <!-- Чипсы-нюансы -->
       {% if o.terms.chips and o.terms.chips|length %}
       <div class="chips">
         {% for ch in o.terms.chips %}<span class="chip">{{ ch }}</span>{% endfor %}
       </div>
       {% endif %}
 
+      <!-- Итоговый вывод по предложению -->
+      <div class="summary">
+        {% if o.summary %}
+          {{ o.summary }}
+        {% else %}
+          {% set _sum = ( (o.amount.min|string) ~ ('–' ~ (o.amount.max|string)) if o.amount.min else (o.amount.max|string) ) ~ ' ₽' %}
+          {% set _term = ( (o.terms.days|string) ~ ' дней' ) if o.terms.days else 'бессрочный срок' %}
+          {% set _aud = o.audience or 'новые игроки' %}
+          {% set _where = o.where or 'ввод кода при регистрации/в ЛК' %}
+          {{ 'Предложение «' ~ (o.source) ~ '» ориентировано на ' ~ _aud ~
+             '. Доступна сумма фрибета ' ~ _sum ~ ', ' ~ _term ~
+             '. Активация: ' ~ _where ~ '. Нюансы: ' ~ (o.terms.chips|join(', ') if o.terms.chips else 'без дополнительных требований') ~
+             '. Рекомендуем сравнить условия с другими источниками в списке — сумма и ограничения могут отличаться.' }}
+        {% endif %}
+      </div>
+
+      <!-- Ссылки -->
       <div class="links">
         {% if o.links.details %}<a class="link" href="{{ o.links.details }}">Страница условий</a>{% endif %}
         {% if o.links.archive %}<a class="link" href="{{ o.links.archive }}">Архив прошедших кодов</a>{% endif %}
@@ -150,7 +177,7 @@
     {% endfor %}
   </div>
 
-  <!-- Активные: таблица -->
+  <!-- Активные: таблица (без изменений, только «Бессрочный») -->
   <div id="tableActive" class="table-wrap">
     <table class="table" id="offersTable">
       <thead>
@@ -165,16 +192,7 @@
           <td>{{ o.source }}</td>
           <td>{% if o.codes|length %}{{ o.codes|join(', ') }}{% else %}—{% endif %}</td>
           <td>{% if o.amount.min %}{{ o.amount.min }}–{% endif %}{{ o.amount.max or '—' }} ₽</td>
-
-          <!-- СРОК в таблице -->
-          <td>
-            {% if o.terms.days %}
-              {{ o.terms.days }} д.
-            {% else %}
-              Бессрочный
-            {% endif %}
-          </td>
-
+          <td>{% if o.terms.days %}{{ o.terms.days }} д.{% else %}Бессрочный{% endif %}</td>
           <td>
             {% if o.terms.coef_max %}≤ {{ o.terms.coef_max }}{% endif %}
             {% if o.terms.withdraw_min %}; вывод ≥ {{ o.terms.withdraw_min }} ₽{% endif %}
@@ -190,6 +208,7 @@
     </table>
   </div>
 
+  <!-- Истёкшие (как было) -->
   <div class="section-title">Истёкшие промокоды</div>
   <div class="section-hint">Не активны. Оставлены для истории. В режиме «Таблица» показаны ниже активных.</div>
 
@@ -204,12 +223,7 @@
       <div class="codes">{% for c in o.codes %}<div class="codepill"><span>{{ c }}</span></div>{% endfor %}</div>
       <div class="grid">
         <div class="kv"><b>Сумма</b> {% if o.amount.min %}{{ o.amount.min }}–{% endif %}{{ o.amount.max or '—' }} ₽</div>
-
-        <!-- СРОК в истёкших -->
-        <div class="kv"><b>Срок</b>
-          {% if o.terms.days %}{{ o.terms.days }} дней{% else %}Бессрочный{% endif %}
-        </div>
-
+        <div class="kv"><b>Срок</b>{% if o.terms.days %} {{ o.terms.days }} дней{% else %} Бессрочный{% endif %}</div>
         <div class="kv"><b>Тип</b> {{ o.tag }}</div>
         <div class="kv"><b>Источник</b> <a class="link" href="{{ o.source_url }}">ссылка</a></div>
       </div>
