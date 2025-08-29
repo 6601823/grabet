@@ -1,0 +1,143 @@
+{
+  "updated_at": "2025-08-28T10:30:00+03:00",
+  "brand": "Winline",
+  "sources": [
+    "https://metaratings.ru/bonuses/winline-ru/promokody/",
+    "https://boxberry.ru/promokod/shop/winline/",
+    "https://promokodi.ru/store/winline/",
+    "https://legalbet.ru/shkola-bettinga/kuda-vvodit-promokod-ot-winline/",
+    "https://www.sports.ru/betting/bonuses/promokody-winline/",
+    "https://bookmaker-ratings.ru/bonusy-bukmeker/vinlajn/promokod-winline/",
+    "https://sportclan.ru/bonusy/vinlayn-promokod-bonus-winline/"
+  ],
+  "active_offers": [
+    {
+      "source": "Рейтинг Букмекеров",
+      "source_url": "https://bookmaker-ratings.ru/bonusy-bukmeker/vinlajn/promokod-winline/",
+      "updated": "2025-07-01",
+      "status": "active",
+      "tag": "приветственный фрибет",
+      "codes": ["RBMAX"],
+      "amount": { "min": 50, "max": 3000, "currency": "RUB", "label_badges": [] },
+      "audience": "новые пользователи",
+      "where": "ввод при регистрации",
+      "terms": {
+        "days": 30,
+        "coef_min": 1.30,
+        "coef_max": 2.50,
+        "deposit_min": 500,
+        "withdraw_min": 0,
+        "chips": ["идентификация обязательна", "чистая прибыль за вычетом фрибета"]
+      },
+      "notes": ["Где вводить промокод: при регистрации есть отдельное поле (Legalbet)"],
+      "badges_line": ["common"],
+      "reviews": null,
+      "rating": 88,
+      "links": { "details": null, "archive": null }
+    },
+    {
+      "source": "Sports.ru",
+      "source_url": "https://www.sports.ru/betting/bonuses/promokody-winline/",
+      "updated": "2025-08-01",
+      "status": "active",
+      "tag": "фрибет в приложении",
+      "codes": ["SPRTS"],
+      "amount": { "min": 50, "max": 3000, "currency": "RUB", "label_badges": [] },
+      "audience": "новые пользователи",
+      "where": "только в мобильном приложении",
+      "terms": {
+        "days": 30,
+        "coef_min": 1.30,
+        "coef_max": 2.50,
+        "deposit_min": 500,
+        "withdraw_min": 0,
+        "chips": ["активация в приложении", "чистая прибыль, фрибет не возвращается"]
+      },
+      "notes": [],
+      "badges_line": ["event"],
+      "reviews": null,
+      "rating": 86,
+      "links": { "details": null }
+    },
+    {
+      "source": "Sportclan",
+      "source_url": "https://sportclan.ru/bonusy/vinlayn-promokod-bonus-winline/",
+      "updated": "2025-08-15",
+      "status": "active",
+      "tag": "приветственный фрибет",
+      "codes": ["Clan", "Sportclan"],
+      "amount": { "min": null, "max": 3000, "currency": "RUB", "label_badges": [] },
+      "audience": "новые пользователи",
+      "where": "регистрация/ЛК",
+      "terms": { "days": null, "coef_max": null, "withdraw_min": 0, "chips": [] },
+      "notes": ["На странице также перечислены устаревшие коды — их переносим в архив."],
+      "badges_line": [],
+      "reviews": null,
+      "rating": 80,
+      "links": { "details": null }
+    },
+    {
+      "source": "Boxberry",
+      "source_url": "https://boxberry.ru/promokod/shop/winline/",
+      "updated": "2025-08-28",
+      "status": "active",
+      "tag": "партнерский промокод",
+      "codes": ["RPL"],
+      "amount": { "min": null, "max": 3000, "currency": "RUB", "label_badges": [] },
+      "audience": "новые/действующие (по условиям акции)",
+      "where": "по ссылке, регистрация/ЛК",
+      "terms": { "days": null, "coef_max": null, "withdraw_min": null, "chips": ["условия зависят от акции"] },
+      "notes": [],
+      "badges_line": ["event"],
+      "reviews": null,
+      "rating": 78,
+      "links": { "details": null }
+    },
+    {
+      "source": "Promokodi.ru",
+      "source_url": "https://promokodi.ru/store/winline/",
+      "updated": "2025-08-28",
+      "status": "active",
+      "tag": "купоны/промокоды",
+      "codes": [],
+      "amount": { "min": null, "max": 3000, "currency": "RUB", "label_badges": [] },
+      "audience": "новые пользователи",
+      "where": "по ссылке/в ЛК",
+      "terms": { "days": null, "coef_max": null, "withdraw_min": null, "chips": ["промокод раскрывается после клика"] },
+      "notes": [],
+      "badges_line": [],
+      "reviews": null,
+      "rating": 72,
+      "links": { "details": null }
+    },
+    {
+      "source": "Legalbet (гид)",
+      "source_url": "https://legalbet.ru/shkola-bettinga/kuda-vvodit-promokod-от-winline/",
+      "updated": "2025-08-02",
+      "status": "active",
+      "tag": "куда вводить промокод",
+      "codes": [],
+      "amount": { "min": null, "max": null, "currency": "RUB", "label_badges": [] },
+      "audience": "все пользователи",
+      "where": "при регистрации / в личном кабинете",
+      "terms": { "days": null, "coef_max": null, "withdraw_min": null, "chips": [] },
+      "notes": ["Страница-объяснение: поле для промокода при регистрации и в ЛК."],
+      "badges_line": [],
+      "reviews": null,
+      "rating": 0,
+      "links": { "details": "https://legalbet.ru/bonus/winline-bezdepozitnie-fribeti-v-prilozhenii/" }
+    }
+  ],
+  "expired_offers": [
+    {
+      "source": "Sportclan (архив)",
+      "source_url": "https://sportclan.ru/bonusy/vinlayn-promokod-bonus-winline/",
+      "updated": "истёк: 2024-12-31",
+      "status": "expired",
+      "tag": "устаревший код",
+      "codes": ["falbet", "RB_2022"],
+      "amount": { "min": null, "max": 1000, "currency": "RUB" },
+      "terms": { "days": null, "coef_max": null, "chips": [] }
+    }
+  ]
+}
