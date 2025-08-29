@@ -4,13 +4,14 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Промокоды Фонбет — сравнение и отзывы</title>
-  <link rel="stylesheet" href="assets/styles.css">
+  <link rel="stylesheet" href="assets/base.css">
+  <link rel="stylesheet" href="assets/themes/fonbet.css">
 </head>
 <body>
 <div class="wrap">
 
   <h1>Промокоды Фонбет — сравнение</h1>
-  <div class="hint">Обновлено: {{ data.updated_at }}. Активные сверху, ниже — истёкшие.</div>
+  <div class="hint">Обновлено: {{ data.updated_at }}. Активные сверху; истёкшие — ниже и присутствуют и в карточках, и в таблице.</div>
 
   <!-- ===== Панель управления ===== -->
   <div class="toolbar" id="toolbar">
@@ -23,7 +24,6 @@
         <option value="reviews">По отзывам</option>
       </select>
     </div>
-
     <div class="group">
       <label class="small">Отображать в виде:</label>
       <div class="seg" id="view">
@@ -31,12 +31,11 @@
         <button type="button" data-view="table">Большая таблица</button>
       </div>
     </div>
-
     <button class="theme-btn" id="themeToggle">Тёмная/Светлая тема</button>
   </div>
 
-  <!-- ====== Вид 1: Карточки ====== -->
-  <div id="cardsView">
+  <!-- ===== Активные: ВИД «КАРТОЧКИ» ===== -->
+  <div id="cardsActive">
     {% for o in data.active_offers %}
     <article class="card" aria-label="{{ o.source }}"
       data-date="{{ o.updated }}"
@@ -82,7 +81,7 @@
         <div class="kv"><b>Для кого</b> {{ o.audience }}</div>
         <div class="kv"><b>Срок</b> {{ o.terms.days or '—' }} дней <span class="nom nom--std">как у всех</span></div>
 
-        <!-- Плитка "Отзывы" вместо "Ставка" -->
+        <!-- Плитка "Отзывы" -->
         <div class="kv kv-reviews" data-reviews>
           <b>Отзывы о промокоде</b>
           <div class="rv-mini">
@@ -96,7 +95,6 @@
             <div class="rv-hint">на основе {{ o.reviews.total }} оценок</div>
             <div class="rv-score">{{ '%.1f' % o.reviews.avg }} / 5</div>
           </div>
-
           <div class="rv-detail">
             {% set total = o.reviews.total|float if o.reviews.total else 1 %}
             {% for k in ['5','4','3','2','1'] %}
@@ -131,10 +129,44 @@
       </div>
     </article>
     {% endfor %}
+  </div>
 
-    <div class="section-title">Истёкшие промокоды</div>
-    <div class="section-hint">Не активны. Оставлены для истории.</div>
+  <!-- ===== Активные: ВИД «ТАБЛИЦА» ===== -->
+  <div id="tableActive" class="table-wrap">
+    <table class="table" id="offersTable">
+      <thead>
+        <tr>
+          <th>Источник</th><th>Коды</th><th>Сумма</th><th>Срок</th>
+          <th>Нюансы/Условия</th><th>Отзывы</th><th>Рейтинг GraBet</th><th>Обновлено</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for o in data.active_offers %}
+        <tr data-date="{{ o.updated }}" data-max="{{ o.amount.max or 0 }}" data-avg="{{ o.reviews.avg or 0 }}" data-rating="{{ o.rating or 0 }}">
+          <td>{{ o.source }}</td>
+          <td>{{ o.codes|join(', ') }}</td>
+          <td>{% if o.amount.min %}{{ o.amount.min }}–{% endif %}{{ o.amount.max }} ₽</td>
+          <td>{{ o.terms.days or '—' }} д.</td>
+          <td>
+            {% if o.terms.coef_max %}≤ {{ o.terms.coef_max }}{% endif %}
+            {% if o.terms.withdraw_min %}; вывод ≥ {{ o.terms.withdraw_min }} ₽{% endif %}
+            {% if o.terms.chips %}; {{ o.terms.chips|join('; ') }}{% endif %}
+            {% if o.notes %}; {{ o.notes|join('; ') }}{% endif %}
+          </td>
+          <td>{{ '%.1f' % o.reviews.avg }}/5 ({{ o.reviews.total }})</td>
+          <td class="rating-badge">{{ o.rating or 0 }}/100</td>
+          <td>{{ o.updated }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 
+  <!-- ===== Истёкшие: карточки (всегда видны) ===== -->
+  <div class="section-title">Истёкшие промокоды</div>
+  <div class="section-hint">Не активны. Оставлены для истории. В режиме «Таблица» показаны ниже активных.</div>
+
+  <div id="expiredCards">
     {% for o in data.expired_offers %}
     <article class="card expired">
       <div class="card__top">
@@ -146,38 +178,34 @@
       <div class="grid">
         <div class="kv"><b>Сумма</b> {% if o.amount.min %}{{ o.amount.min }}–{% endif %}{{ o.amount.max }} ₽</div>
         <div class="kv"><b>Срок</b> {{ o.terms.days or '—' }} дней</div>
-        <div class="kv"><b>Ставка</b> ординар ≤ {{ o.terms.coef_max or '—' }}</div>
+        <div class="kv"><b>Ставка</b> {% if o.terms.coef_max %}ординар ≤ {{ o.terms.coef_max }}{% else %}—{% endif %}</div>
         <div class="kv"><b>Тип</b> {{ o.tag }}</div>
       </div>
     </article>
     {% endfor %}
   </div>
 
-  <!-- ====== Вид 2: Большая таблица ====== -->
-  <div id="tableView" class="table-wrap">
-    <table class="table" id="offersTable">
+  <!-- ===== Истёкшие: таблица (только при виде «Таблица») ===== -->
+  <div id="tableExpired" class="table-wrap">
+    <table class="table" id="expiredTable">
       <thead>
         <tr>
-          <th>Источник</th>
-          <th>Промокод(ы)</th>
-          <th>Сумма</th>
-          <th>Срок</th>
-          <th>Условия</th>
-          <th>Отзывы</th>
-          <th>Рейтинг GraBet</th>
-          <th>Обновлено</th>
+          <th>Источник</th><th>Коды</th><th>Сумма</th><th>Срок</th>
+          <th>Нюансы/Условия</th><th>Статус</th><th>Обновлено</th>
         </tr>
       </thead>
       <tbody>
-        {% for o in data.active_offers %}
-        <tr data-date="{{ o.updated }}" data-max="{{ o.amount.max or 0 }}" data-avg="{{ o.reviews.avg or 0 }}" data-rating="{{ o.rating or 0 }}">
+        {% for o in data.expired_offers %}
+        <tr data-date="{{ o.updated }}">
           <td>{{ o.source }}</td>
           <td>{{ o.codes|join(', ') }}</td>
           <td>{% if o.amount.min %}{{ o.amount.min }}–{% endif %}{{ o.amount.max }} ₽</td>
-          <td>{{ o.terms.days or '—' }} дней</td>
-          <td>≤ {{ o.terms.coef_max or '—' }}{% if o.terms.withdraw_min %}, вывод после пополнения ≥ {{ o.terms.withdraw_min }} ₽{% endif %}</td>
-          <td>{{ '%.1f' % o.reviews.avg }}/5 ({{ o.reviews.total }})</td>
-          <td class="rating-badge">{{ o.rating or 0 }}/100</td>
+          <td>{{ o.terms.days or '—' }} д.</td>
+          <td>
+            {% if o.terms.coef_max %}≤ {{ o.terms.coef_max }}{% endif %}
+            {% if o.terms.chips %}; {{ o.terms.chips|join('; ') }}{% endif %}
+          </td>
+          <td>истёк</td>
           <td>{{ o.updated }}</td>
         </tr>
         {% endfor %}
@@ -188,98 +216,88 @@
 </div>
 
 <script>
-/* === ТЕМА: ручное переключение + сохранение === */
+/* Тема: ручной тумблер + сохранение */
 (function(){
-  const key='grabet-theme';
-  const root=document.documentElement;
-  const btn=document.getElementById('themeToggle');
-  // применить сохранённую
+  const key='grabet-theme',root=document.documentElement,btn=document.getElementById('themeToggle');
   const saved=localStorage.getItem(key);
-  if(saved==='light' || saved==='dark'){ root.setAttribute('data-theme', saved); }
+  if(saved==='light'||saved==='dark'){root.setAttribute('data-theme',saved);}
   btn?.addEventListener('click',()=>{
-    const now=root.getAttribute('data-theme')||'';
+    const now=root.getAttribute('data-theme')||'dark';
     const next= now==='light' ? 'dark' : 'light';
-    root.setAttribute('data-theme', next);
-    localStorage.setItem(key, next);
+    root.setAttribute('data-theme',next); localStorage.setItem(key,next);
   });
 })();
 
-/* === КОПИРОВАНИЕ КОДА === */
+/* Копирование кода */
 document.addEventListener('click', e=>{
-  const btn=e.target.closest('[data-copy]');
-  if(!btn) return;
-  const pill=btn.closest('.codepill');
-  const code=pill?.dataset.code?.trim();
-  if(!code) return;
-  navigator.clipboard.writeText(code).then(()=>{
-    const old=btn.textContent; btn.textContent='Скопировано!'; setTimeout(()=>btn.textContent=old,1200);
-  });
+  const btn=e.target.closest('[data-copy]'); if(!btn) return;
+  const pill=btn.closest('.codepill'); const code=pill?.dataset.code?.trim(); if(!code) return;
+  navigator.clipboard.writeText(code).then(()=>{const t=btn.textContent;btn.textContent='Скопировано!';setTimeout(()=>btn.textContent=t,1200);});
 });
 
-/* === ОТЗЫВЫ: разворот плитки === */
+/* Плитка отзывов: разворот/сворачивание */
 document.addEventListener('click', e=>{
   const toggle=e.target.closest('[data-reviews-toggle]');
-  if(toggle){
-    const box=toggle.closest('.kv-reviews'); box?.classList.toggle('expanded'); return;
-  }
-  const tile=e.target.closest('.kv-reviews');
-  if(tile && !e.target.closest('button')){ tile.classList.toggle('expanded'); }
+  if(toggle){ toggle.closest('.kv-reviews')?.classList.toggle('expanded'); return; }
+  const tile=e.target.closest('.kv-reviews'); if(tile && !e.target.closest('button')) tile.classList.toggle('expanded');
 });
 
-/* === СМЕНА ВИДА (карточки/таблица) === */
+/* Вид: показываем ТОЛЬКО активные как карты/таблица; истёкшие всегда отображаются */
 (function(){
   const view=document.getElementById('view');
-  const cards=document.getElementById('cardsView');
-  const table=document.getElementById('tableView');
-  if(!view) return;
-  view.addEventListener('click', (e)=>{
+  const cardsActive=document.getElementById('cardsActive');
+  const tableActive=document.getElementById('tableActive');
+  const tableExpired=document.getElementById('tableExpired');
+  // начальное состояние
+  tableActive.style.display='none'; tableExpired.style.display='none';
+  view?.addEventListener('click',(e)=>{
     const b=e.target.closest('button[data-view]'); if(!b) return;
-    view.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
-    b.classList.add('active');
+    view.querySelectorAll('button').forEach(x=>x.classList.remove('active')); b.classList.add('active');
     const v=b.dataset.view;
-    if(v==='table'){ table.style.display='block'; cards.style.display='none'; }
-    else { table.style.display='none'; cards.style.display='block'; }
-    // пересортируем активный вид под текущий селект
+    if(v==='table'){ tableActive.style.display='block'; tableExpired.style.display='block'; cardsActive.style.display='none'; }
+    else { tableActive.style.display='none'; tableExpired.style.display='none'; cardsActive.style.display='block'; }
     doSort();
   });
 })();
 
-/* === СОРТИРОВКА === */
+/* Сортировка: только активных (карточек и таблицы) */
 const sortSel=document.getElementById('sort');
 sortSel?.addEventListener('change', doSort);
 function doSort(){
-  const mode=sortSel?.value || 'grabet';
-  const cardsWrap=document.getElementById('cardsView');
-  const tableWrap=document.getElementById('tableView');
-  const tableBody=document.querySelector('#offersTable tbody');
-
-  // функция ключа сортировки
+  const mode=sortSel?.value||'grabet';
   const keyFn = (el)=>{
-    const dateStr=el.getAttribute('data-date')||'';
+    const ts=Date.parse(el.getAttribute('data-date')||'')||0;
     const max=+(el.getAttribute('data-max')||0);
     const avg=+(el.getAttribute('data-avg')||0);
     const rating=+(el.getAttribute('data-rating')||0);
-    const ts = Date.parse(dateStr) || 0;
-    switch(mode){
-      case 'date':   return ts;        // новее — выше
-      case 'amount': return max;       // больше — выше
-      case 'reviews':return avg;       // выше средняя — выше
-      default:       return rating;    // рейтинг GraBet
-    }
+    switch(mode){case 'date':return ts;case 'amount':return max;case 'reviews':return avg;default:return rating;}
   };
-
-  // если активен вид "карточки"
-  if(cardsWrap && cardsWrap.style.display !== 'none'){
-    const nodes=[...cardsWrap.querySelectorAll('.card:not(.expired)')];
-    nodes.sort((a,b)=> keyFn(b)-keyFn(a)).forEach(n=>cardsWrap.insertBefore(n, cardsWrap.firstChild));
+  // карточки активных
+  const wrap=document.getElementById('cardsActive');
+  if(wrap && wrap.style.display!=='none'){
+    const nodes=[...wrap.querySelectorAll('.card')];
+    nodes.sort((a,b)=>keyFn(b)-keyFn(a)).forEach(n=>wrap.insertBefore(n, wrap.firstChild));
   }
-  // если активен вид "таблица"
-  if(tableBody && document.getElementById('tableView').style.display!=='none'){
-    const rows=[...tableBody.querySelectorAll('tr')];
-    rows.sort((a,b)=> keyFn(b)-keyFn(a)).forEach(r=>tableBody.appendChild(r));
+  // таблица активных
+  const tbody=document.querySelector('#offersTable tbody');
+  if(tbody && document.getElementById('tableActive').style.display!=='none'){
+    const rows=[...tbody.querySelectorAll('tr')];
+    rows.sort((a,b)=>keyFn(b)-keyFn(a)).forEach(r=>tbody.appendChild(r));
+  }
+  // истёкшие сортируем по дате убыв. (в карточках и таблице), но вне выбора пользователя
+  const exWrap=document.getElementById('expiredCards');
+  if(exWrap){
+    const cn=[...exWrap.querySelectorAll('.card')];
+    cn.sort((a,b)=> (Date.parse(b.getAttribute('data-date')||'')||0) - (Date.parse(a.getAttribute('data-date')||'')||0))
+      .forEach(n=>exWrap.appendChild(n));
+  }
+  const exBody=document.querySelector('#expiredTable tbody');
+  if(exBody){
+    const rs=[...exBody.querySelectorAll('tr')];
+    rs.sort((a,b)=> (Date.parse(b.getAttribute('data-date')||'')||0) - (Date.parse(a.getAttribute('data-date')||'')||0))
+      .forEach(r=>exBody.appendChild(r));
   }
 }
-// первичная сортировка по рейтингу
 doSort();
 </script>
 </body>
