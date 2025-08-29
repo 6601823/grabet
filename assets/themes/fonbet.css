@@ -1,0 +1,25 @@
+/* FONBET theme tokens */
+:root{
+  --bg:#0f1115; --card:#161922; --text:#e7e9ee; --muted:#9aa3b2;
+  --stroke:#22283a; --chip:#232836;
+  --primary:#1e5fff; --primary-contrast:#ffffff;
+  --ok:#2ecc71; --warn:#f39c12; --bad:#e74c3c;
+}
+
+/* ручной переключатель темы (data-theme="light") */
+:root[data-theme="light"]{
+  --bg:#f6f7fa; --card:#ffffff; --text:#1a1c21; --muted:#6b7280;
+  --stroke:#d1d5db; --chip:#f1f3f7;
+  --primary:#2f6bff; --primary-contrast:#ffffff;
+  --ok:#16a34a; --warn:#b45309; --bad:#dc2626;
+}
+
+/* если пользователь не выбирал вручную, уважаем системную светлую */
+@media (prefers-color-scheme: light){
+  :root:not([data-theme]){
+    --bg:#f6f7fa; --card:#ffffff; --text:#1a1c21; --muted:#6b7280;
+    --stroke:#d1d5db; --chip:#f1f3f7;
+    --primary:#2f6bff; --primary-contrast:#ffffff;
+    --ok:#16a34a; --warn:#b45309; --bad:#dc2626;
+  }
+}
